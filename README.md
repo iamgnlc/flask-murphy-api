@@ -9,5 +9,5 @@ pip install Flask
 
 . .venv/bin/activate
 
-flask --app murphy.py --debug run
+flask --app api/murphy.py --debug run
 ```

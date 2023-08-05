@@ -1,7 +1,9 @@
-from flask import Flask
+from flask import Flask, Response
 
 import json
 import random
+
+MAX_LAWS = 50
 
 app = Flask(__name__)
 
@@ -11,8 +13,8 @@ data = json.load(file)
 def validate(number):
     number = int(number)
 
-    if number > 10:
-        number = 10
+    if number > MAX_LAWS:
+        number = MAX_LAWS
 
     if number < 1:
         number = 1
@@ -25,7 +27,7 @@ def validate(number):
 def main(number = 1):
     number = validate(number)
 
-    print (len(data))
+    # print (len(data))
 
-    law = random.sample(data, number)
-    return law
+    laws = random.sample(data, number)
+    return Response(json.dumps(laws), mimetype='application/json')

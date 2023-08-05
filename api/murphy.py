@@ -3,7 +3,12 @@ from flask import Flask, Response
 import json
 import random
 
-from config import *
+from dotenv import load_dotenv
+load_dotenv()
+
+import os
+
+AUTHOR = os.getenv("AUTHOR")
 
 MAX_LAWS = 50
 

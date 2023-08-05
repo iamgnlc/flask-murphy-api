@@ -29,6 +29,8 @@ def validate(number):
 def set_response(laws):
     response = Response(json.dumps(laws), mimetype='application/json')
     response.headers['X-Author'] = AUTHOR
+    response.headers['X-Count'] = len(laws)
+    response.headers['X-Total-Count'] = len(data)
 
     return response
 
@@ -36,8 +38,6 @@ def set_response(laws):
 @app.route("/<number>")
 def main(number = 1):
     number = validate(number)
-
-    # print (len(data))
 
     laws = random.sample(data, number)
     response = set_response(laws)

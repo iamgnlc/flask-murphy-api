@@ -3,6 +3,8 @@ from flask import Flask, Response
 import json
 import random
 
+from config import *
+
 MAX_LAWS = 50
 
 app = Flask(__name__)
@@ -23,7 +25,7 @@ def validate(number):
 
 def set_response(laws):
     response = Response(json.dumps(laws), mimetype='application/json')
-    response.headers['X-Author'] = 'GNLC'
+    response.headers['X-Author'] = AUTHOR
 
     return response
 

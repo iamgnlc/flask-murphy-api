@@ -8,6 +8,10 @@ python3 -m venv .venv
 pip install Flask
 
 . .venv/bin/activate
+```
 
+## Start app
+
+```sh
 flask --app api/murphy.py --debug run
 ```

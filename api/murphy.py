@@ -21,6 +21,11 @@ def validate(number):
 
     return number
 
+def set_response(laws):
+    response = Response(json.dumps(laws), mimetype='application/json')
+    response.headers['X-Author'] = 'GNLC'
+
+    return response
 
 @app.route("/")
 @app.route("/<number>")
@@ -30,4 +35,6 @@ def main(number = 1):
     # print (len(data))
 
     laws = random.sample(data, number)
-    return Response(json.dumps(laws), mimetype='application/json')
+    response = set_response(laws)
+
+    return response

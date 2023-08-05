@@ -19,10 +19,13 @@ def validate(number):
 
     return number
 
+
 @app.route("/")
 @app.route("/<number>")
 def main(number = 1):
     number = validate(number)
+
+    print (len(data))
 
     law = random.sample(data, number)
     return law

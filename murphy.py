@@ -2,7 +2,7 @@ import json
 import random
 
 from flask import Flask, Response
-from config import *
+from utils.config import *
 
 MAX_LAWS = 50
 

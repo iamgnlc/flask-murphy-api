@@ -357,7 +357,7 @@
   {"title": "Murphy's Fourth Law", "law": "If there is a possibility of several things going wrong, the one that will cause the most damage will be the one to go wrong.", "corollary": "If there is a worse time for something to go wrong, it will happen then."},
   {"title": "Murphy's Law for Electricians", "law": "Any wire cut to length will be too short."},
   {"title": "Murphy's Law of Research", "law": "Enough research will tend to support you theory."},
-  {"title": "Murphy's Law of Selective Gravity: An object will fall so as to do the most damage.", "corollary": "Jenning's Corollary to Murphy's Law of Selective Gravity", "law": "The chance of the bread falling with the buttered side down is directly proportional to the cost of the carpet."},
+  {"title": "Murphy's Law of Selective Gravity", "law": "An object will fall so as to do the most damage.", "corollary": "Jenning's Corollary to Murphy's Law of Selective Gravity: The chance of the bread falling with the buttered side down is directly proportional to the cost of the carpet."},
   {"title": "Murphy's Metric Recommendation", "law": "We should go metric every inch of the way."},
   {"title": "Murphy's Ninth Law", "law": "Nature always sides with the hidden flaw."},
   {"title": "Murphy's Second Law", "law": "Nothing is as easy as it looks."},

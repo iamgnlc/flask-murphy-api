@@ -22,6 +22,7 @@ def set_response(laws):
     response.headers['X-Author'] = AUTHOR
     response.headers['X-Count'] = len(laws)
     response.headers['X-Total-Count'] = len(data)
+    response.headers['X-Robots-Tag'] = 'noindex'
 
     return response
 

@@ -1,15 +1,10 @@
-import json
 import random
 
 from flask import Flask, Response
 from utils.config import *
-
-MAX_LAWS = 50
+from utils.load_data import *
 
 app = Flask(__name__)
-
-file = open('data.json')
-data = json.load(file)
 
 def validate(number):
     number = int(number)

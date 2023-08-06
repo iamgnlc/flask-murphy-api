@@ -4,4 +4,5 @@ load_dotenv()
 import os
 
 AUTHOR = os.getenv("AUTHOR")
-MAX_LAWS = os.getenv("MAX_LAWS")
+
+MAX_LAWS = 50

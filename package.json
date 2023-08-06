@@ -1,0 +1,11 @@
+{
+  "name": "flask-murphy-api",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/iamgnlc/flask-murphy-api.git",
+  "license": "MIT",
+  "scripts": {
+    "setup": "pip install -r requirements.txt",
+    "start": "flask --app murphy.py --debug run"
+  }
+}

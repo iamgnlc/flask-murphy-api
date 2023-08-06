@@ -5,13 +5,29 @@
 ```sh
 python3 -m venv .venv
 
-pip install -r requirements.txt
-
 . .venv/bin/activate
+```
+
+## Install dependencies
+
+```sh
+pip install -r requirements.txt
+```
+
+Or
+
+```sh
+yarn setup
 ```
 
 ## Start app
 
 ```sh
-flask --app api/murphy.py --debug run
+flask --app murphy.py --debug run
+```
+
+Or
+
+```sh
+yarn start
 ```

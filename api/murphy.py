@@ -1,13 +1,9 @@
-from flask import Flask, Response
-from dotenv import load_dotenv
-load_dotenv()
-
 import json
 import random
 
-import os
+from flask import Flask, Response
+from config import *
 
-AUTHOR = os.getenv("AUTHOR")
 MAX_LAWS = 50
 
 app = Flask(__name__)

@@ -23,11 +23,17 @@ def validate(number):
     return number
 
 def show_laws(laws):
-    response = Response(json.dumps(laws), mimetype='application/json')
-    response.headers['X-Author'] = AUTHOR
-    response.headers['X-Count'] = len(laws)
-    response.headers['X-Total-Count'] = len(data)
-    response.headers['X-Robots-Tag'] = 'noindex'
+    headers = {
+        'X-Author': AUTHOR,
+        'X-Count': len(laws),
+        'X-Total-Count': len(data),
+        'X-Robots-Tag': 'noindex',
+    }
+    response = Response(
+        json.dumps(laws),
+        mimetype='application/json',
+        headers=headers
+    )
 
     return response
 

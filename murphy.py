@@ -4,7 +4,8 @@ import os
 from flask import Flask, Response,send_from_directory
 from utils.config import *
 from utils.load_data import *
-from utils.logo import *
+from utils.logo import logo
+from utils.show_env import show_env
 
 app = Flask(__name__)
 
@@ -21,7 +22,7 @@ def validate(number):
 
     return number
 
-def set_response(laws):
+def show_laws(laws):
     response = Response(json.dumps(laws), mimetype='application/json')
     response.headers['X-Author'] = AUTHOR
     response.headers['X-Count'] = len(laws)
@@ -30,12 +31,16 @@ def set_response(laws):
 
     return response
 
+@app.route("/env")
+def env():
+    return show_env()
+
 @app.route("/")
 @app.route("/<number>")
 def main(number = 1):
     number = validate(number)
 
     laws = random.sample(data, number)
-    response = set_response(laws)
+    response = show_laws(laws)
 
     return response

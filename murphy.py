@@ -4,8 +4,11 @@ import os
 from flask import Flask, Response,send_from_directory
 from utils.config import *
 from utils.load_data import *
+from utils.logo import *
 
 app = Flask(__name__)
+
+logo()
 
 def validate(number):
     number = int(number)

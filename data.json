@@ -681,16 +681,46 @@
   {
     "title":"Cohen's Laws of Politics:",
     "laws":[
-      "Law of Alienation: Nothing can so alienate a voter from the political system as backing a winning candidate.",
-      "Law of Ambition: At any one time, thousands of borough councilmen, school board members, attorneys, and businessmen -- as well as congressmen, senators, and governors -- are dreaming of the White House, but few, if any of them, will make it.",
-      "Law of Attraction: Power attracts people but it cannot hold them.",
-      "Law of Competition: The more qualified candidates who are available, the more likely the compromise will be on the candidate whose main qualification is a nonthreatening incompetence.",
-      "Law of Inside Dope: There are many inside dopes in politics and government.",
-      "Law of Lawmaking: Those who express random thoughts to legislative committees are often surprised and appalled to find themselves the instigators of law.",
-      "Law of Permanence: Political power is as permanent as today's newspaper. Ten years from now, few will know or care who the most powerful man in any state was today.",
-      "Law of Secrecy: The best way to publicize a governmental or political action is to attempt to hide it.",
-      "Law of Wealth: Victory goes to the candidate with the most accumulated or contributed wealth who has the financial resources to convince the middle class and poor that he will be on their side.",
-      "Law of Wisdom: Wisdom is considered a sign of weakness by the powerful because a wise man can lead without power but only a powerful man can lead without wisdom."
+      {
+        "title":"Law of Alienation",
+        "law":"Nothing can so alienate a voter from the political system as backing a winning candidate."
+      },
+      {
+        "title":"Law of Ambition",
+        "law":"At any one time, thousands of borough councilmen, school board members, attorneys, and businessmen -- as well as congressmen, senators, and governors -- are dreaming of the White House, but few, if any of them, will make it."
+      },
+      {
+        "title":"Law of Attraction",
+        "law":"Power attracts people but it cannot hold them."
+      },
+      {
+        "title":"Law of Competition",
+        "law":"The more qualified candidates who are available, the more likely the compromise will be on the candidate whose main qualification is a nonthreatening incompetence."
+      },
+      {
+        "title":"Law of Inside Dope",
+        "law":"There are many inside dopes in politics and government."
+      },
+      {
+        "title":"Law of Lawmaking",
+        "law":"Those who express random thoughts to legislative committees are often surprised and appalled to find themselves the instigators of law."
+      },
+      {
+        "title":"Law of Permanence",
+        "law":"Political power is as permanent as today's newspaper. Ten years from now, few will know or care who the most powerful man in any state was today."
+      },
+      {
+        "title":"Law of Secrecy",
+        "law":"The best way to publicize a governmental or political action is to attempt to hide it."
+      },
+      {
+        "title":"Law of Wealth",
+        "law":"Victory goes to the candidate with the most accumulated or contributed wealth who has the financial resources to convince the middle class and poor that he will be on their side."
+      },
+      {
+        "title":"Law of Wisdom",
+        "law":"Wisdom is considered a sign of weakness by the powerful because a wise man can lead without power but only a powerful man can lead without wisdom."
+      }
     ]
   },
   {
@@ -1272,7 +1302,11 @@
   },
   {
     "title":"Hare's Additional Lie",
-    "law":"This will hurt me more than it hurts you. Lowry's Additional Lie: I've never done this before."
+    "law":"This will hurt me more than it hurts you.",
+    "corollary":{
+      "title":"Lowry's Additional Lie",
+      "law":"I've never done this before."
+    }
   },
   {
     "title":"Foster's Law",
@@ -1405,7 +1439,11 @@
   },
   {
     "title":"Gerrold's Law",
-    "law":"A little ignorance can go a long way. (Lyall's Addendum: ...in the direction of maximum harm.)"
+    "law":"A little ignorance can go a long way.",
+    "corollary":{
+      "title":"Lyall's Addendum",
+      "law":"...in the direction of maximum harm."
+    }
   },
   {
     "title":"Gerrold's Pronouncement",
@@ -1437,8 +1475,10 @@
   {
     "title":"Gilb's Laws of Unreliability (see also Troutman's Laws of Computer Programming)",
     "laws":[
-      "Computers are unreliable, but humans are even more unreliable.",
-      "corollary: At the source of every error which is blamed on the computer you will find at least two human errors, including the error of blaming it on the computer.",
+      {
+        "law":"Computers are unreliable, but humans are even more unreliable.",
+        "corollary":"At the source of every error which is blamed on the computer you will find at least two human errors, including the error of blaming it on the computer."
+      },
       "Any system which depends on human reliability is unreliable.",
       "The only difference between the fool and the criminal who attacks a system is that the fool attacks unpredictably and on a broader front.",
       "A system tends to grow in terms of complexity rather than of simplification, until the resulting unreliability becomes intolerable.",
@@ -1873,7 +1913,11 @@
   },
   {
     "title":"Iron Law of Distribution",
-    "law":"Them what has -- gets. Wakefield's Refutation of the Iron Law of Distribution: Them what gets -- has."
+    "law":"Them what has -- gets."
+  },
+  {
+    "title":"Wakefield's Refutation of the Iron Law of Distribution",
+    "law":"Them what gets -- has."
   },
   {
     "title":"Issawi's Law of Aggression",
@@ -1913,10 +1957,22 @@
   {
     "title":"Issawi's Laws of Progress",
     "laws":[
-      "The Course of Progress: Most things get steadily worse.",
-      "The Path of Progress: A shortcut is the longest distance between two points.",
-      "The Dialectics of Progress: Direct action produces direct reaction.",
-      "The Pace of Progress: Society is a mule, not a car... If pressed too hard, it will kick and throw off its rider."
+      {
+        "title":"The Course of Progress",
+        "law":"Most things get steadily worse."
+      },
+      {
+        "title":"The Path of Progress",
+        "law":"A shortcut is the longest distance between two points."
+      },
+      {
+        "title":"The Dialectics of Progress",
+        "law":"Direct action produces direct reaction."
+      },
+      {
+        "title":"The Pace of Progress",
+        "law":"Society is a mule, not a car... If pressed too hard, it will kick and throw off its rider."
+      }
     ]
   },
   {
@@ -1999,7 +2055,11 @@
   },
   {
     "title":"Jones's Motto",
-    "law":"Friends may come and go, but enemies accumulate. McClaughry's Codicil on Jones's Motto: To make an enemy, do someone a favor."
+    "law":"Friends may come and go, but enemies accumulate.",
+    "corollary":{
+      "title":"McClaughry's Codicil on Jones's Motto:",
+      "law":"To make an enemy, do someone a favor."
+    }
   },
   {
     "title":"Jones's Principle",
@@ -2198,7 +2258,8 @@
     "title":"LaCombe's Rule of Percentages",
     "law":"The incidence of anything worthwhile is either 15-25 percent or 80-90 percent.",
     "corollary":{
-      "law":"(Dudenhoefer): An answer of 50 percent will suffice for the 40-60 range."
+      "title":"Dudenhoefer",
+      "law":"An answer of 50 percent will suffice for the 40-60 range."
     }
   },
   {
@@ -2511,7 +2572,11 @@
   },
   {
     "title":"Martin's Law of Committees",
-    "law":"All committee reports conclude that \"it is not prudent to change the policy (or procedure, or organization, or whatever) at this time.\" Martin's Exclusion: Committee reports dealing with wages, salaries, fringe benefits, facilities, computers, employee parking, libraries, coffee breaks, secretarial support, etc., always call for dramatic expenditure increases."
+    "law":"All committee reports conclude that \"it is not prudent to change the policy (or procedure, or organization, or whatever) at this time.\"",
+    "corollary":{
+      "title":"Martin's Exclusion",
+      "law":"Committee reports dealing with wages, salaries, fringe benefits, facilities, computers, employee parking, libraries, coffee breaks, secretarial support, etc., always call for dramatic expenditure increases."
+    }
   },
   {
     "title":"Martin's Law of Communication",
@@ -3107,7 +3172,11 @@
   },
   {
     "title":"Peter's Placebo",
-    "law":"An ounce of image is worth a pound of performance. Peter's Prognosis: Spend sufficient time in confirming the need and the need will disappear."
+    "law":"An ounce of image is worth a pound of performance.",
+    "corollary":{
+      "title":"Peter's Prognosis",
+      "law":"Spend sufficient time in confirming the need and the need will disappear."
+    }
   },
   {
     "title":"Peter's Rule for Creative Incompetence",
@@ -3943,7 +4012,11 @@
   },
   {
     "title":"Uhlmann's Razor",
-    "law":"When stupidity is a sufficient explanation, there is no need to have recourse to any other. Corollary (Law of Historical Causation): It seemed like the thing to do at the time."
+    "law":"When stupidity is a sufficient explanation, there is no need to have recourse to any other.",
+    "corollary":{
+      "title":"Law of Historical Causation",
+      "law":"It seemed like the thing to do at the time."
+    }
   },
   {
     "title":"The Ultimate Law",

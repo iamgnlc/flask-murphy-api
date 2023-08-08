@@ -13,7 +13,9 @@
   },
   {
     "law":"If there is a possibility of several things going wrong, the one that will cause the most damage will be the one to go wrong.",
-    "corollary":"If there is a worse time for something to go wrong, it will happen then."
+    "corollary":{
+      "law":"If there is a worse time for something to go wrong, it will happen then."
+    }
   },
   {
     "law":"If anything simply cannot go wrong, it will anyway."
@@ -148,7 +150,9 @@
   {
     "title":"Rule of Accuracy",
     "law":"When working toward the solution of a problem, it always helps if you know the answer.",
-    "corollary":"Provided, of course, that you know there is a problem."
+    "corollary":{
+      "law":"Provided, of course, that you know there is a problem."
+    }
   },
   {
     "title":"Acheson's Rule of the Bureaucracy",
@@ -193,12 +197,16 @@
   {
     "title":"Anthony's Law of the Workshop",
     "law":"Any tool, when dropped, will roll into the least accessible corner of the workshop.",
-    "corollary":"On the way to the corner, any dropped tool will first always strike your toes."
+    "corollary":{
+      "law":"On the way to the corner, any dropped tool will first always strike your toes."
+    }
   },
   {
     "title":"Laws of Applied Confusion",
     "law":"The one piece that the plant forgot to ship is the one that supports 75% of the balance of the shipment.",
-    "corollary":"Not only did the plant forget to ship it, 50% of the time they haven't even made it."
+    "corollary":{
+      "law":"Not only did the plant forget to ship it, 50% of the time they haven't even made it."
+    }
   },
   {
     "title":"Approval Seeker's Law",
@@ -583,23 +591,32 @@
   },
   {
     "title":"Chisholm's Second Law",
-    "law":"When things are going well, something will go wrong."
-  },
-  {
-    "title":"Corollaries",
-    "laws":[
-      "When things just can't get any worse, they will.",
-      "Anytime things appear to be going better, you haveoverlooked something."
+    "law":"When things are going well, something will go wrong.",
+    "corollaries":[
+      {
+        "law":"When things just can't get any worse, they will."
+      },
+      {
+        "law":"Anytime things appear to be going better, you haveoverlooked something."
+      }
     ]
   },
   {
     "title":"Chisholm's Third Law",
     "law":"Proposals, as understood by the proposer, will be judged otherwise by others.",
     "corollaries":[
-      "If you explain so clearly that nobody can misunderstand, somebody will.",
-      "If you do something which you are sure will meet with everyone's approval, somebody won't like it.",
-      "Procedures devised to implement the purpose won't quite work.",
-      "No matter how long or how many times you explain, no one is litening."
+      {
+        "law":"If you explain so clearly that nobody can misunderstand, somebody will."
+      },
+      {
+        "law":"If you do something which you are sure will meet with everyone's approval, somebody won't like it."
+      },
+      {
+        "law":"Procedures devised to implement the purpose won't quite work."
+      },
+      {
+        "law":"No matter how long or how many times you explain, no one is litening."
+      }
     ]
   },
   {
@@ -616,11 +633,11 @@
   },
   {
     "title":"Clarke's First Law",
-    "law":"When a distinguished but elderly scientist states that something is possible, he is almost certainly right. When he states that something is impossible, he is very probably wrong."
-  },
-  {
-    "title":"Corollary (Asimov)",
-    "law":"When the lay public rallies round an idea that is denounced by distinguished but elderly scientists, and supports that idea with great fervor and emotion -- the distinguished ut elderly scientists are then, after all, right."
+    "law":"When a distinguished but elderly scientist states that something is possible, he is almost certainly right. When he states that something is impossible, he is very probably wrong.",
+    "corollary":{
+      "title":"Asimov",
+      "law":"When the lay public rallies round an idea that is denounced by distinguished but elderly scientists, and supports that idea with great fervor and emotion -- the distinguished ut elderly scientists are then, after all, right."
+    }
   },
   {
     "title":"Clarke's Second Law",
@@ -637,7 +654,9 @@
   {
     "title":"Clark's First Law of Relativity",
     "law":"No matter how often you trade dinner or other invitations with in-laws, you will lose a small fortune in the exchange.",
-    "corollary":"Don't try it: you cannot drink enough of your in-laws' booze to get even before your liver fails."
+    "corollary":{
+      "law":"Don't try it: you cannot drink enough of your in-laws' booze to get even before your liver fails."
+    }
   },
   {
     "title":"Clark's Law",
@@ -872,16 +891,17 @@
   },
   {
     "title":"de la Lastra's Law",
-    "law":"After the last of 16 mounting screws has been removed from an access cover, it will be discovered that the wrong access cover has been removed."
-  },
-  {
-    "title":"de la Lastra's Corollary",
-    "law":"After an access cover has been secured by 16 hold-down screws, it will be discovered that the gasket has been ommitted."
+    "law":"After the last of 16 mounting screws has been removed from an access cover, it will be discovered that the wrong access cover has been removed.",
+    "corollary":{
+      "law":"After an access cover has been secured by 16 hold-down screws, it will be discovered that the gasket has been ommitted."
+    }
   },
   {
     "title":"Deadlock's Law",
     "law":"If the law-makers make a compromise, the place where it will be felt most is the taxpayer's pocket.",
-    "corollary":"The compromise will always be more expensive than either of the suggestions it is compromising."
+    "corollary":{
+      "law":"The compromise will always be more expensive than either of the suggestions it is compromising."
+    }
   },
   {
     "title":"Dean's Law of the District of Columbia",
@@ -1061,7 +1081,9 @@
   {
     "title":"Ettorre's Observation",
     "law":"The other line moves faster.",
-    "corollary":"Don't try to change lines. The other line -- the one you were in originally -- will then move faster."
+    "corollary":{
+      "law":"Don't try to change lines. The other line -- the one you were in originally -- will then move faster."
+    }
   },
   {
     "title":"Evans's Law of Politics",
@@ -1083,11 +1105,11 @@
   },
   {
     "title":"Eve's Discovery",
-    "law":"At a bargain sale, the only suit or dress that you like best and that fits is the one not on sale."
-  },
-  {
-    "title":"Adam's Corollary",
-    "law":"It's easy to tell when you've got a bargain -- it doesn't fit."
+    "law":"At a bargain sale, the only suit or dress that you like best and that fits is the one not on sale.",
+    "corollary":{
+      "title":"Adam's Corollary",
+      "law":"It's easy to tell when you've got a bargain -- it doesn't fit."
+    }
   },
   {
     "title":"Nonreciprocal Laws of Expectations",
@@ -1173,10 +1195,14 @@
   },
   {
     "title":"Finagle's Third Law",
-    "law":"In any collection of data, the figure most obviously correct, beyond all need of checking, is the mistake. Corollaries",
-    "laws":[
-      "No one whom you ask for help will see it.",
-      "Everyone who stops by with unsought advice ill see it immediately."
+    "law":"In any collection of data, the figure most obviously correct, beyond all need of checking, is the mistake.",
+    "corollaries":[
+      {
+        "law":"No one whom you ask for help will see it."
+      },
+      {
+        "law":"Everyone who stops by with unsought advice ill see it immediately."
+      }
     ]
   },
   {
@@ -1263,7 +1289,9 @@
   {
     "title":"Frankel's Law",
     "law":"Whatever happens in government could have happened differently, and it usually would have been better if it had.",
-    "corollary":"Once things have happened, no matter how accidentally, they will be regarded as manifestations of an unchangeable Higher Reason."
+    "corollary":{
+      "law":"Once things have happened, no matter how accidentally, they will be regarded as manifestations of an unchangeable Higher Reason."
+    }
   },
   {
     "title":"Franklin's Observation",
@@ -1343,7 +1371,9 @@
   {
     "title":"Gallois's Revelation",
     "law":"If you put tomfoolery into a computer, nothing comes out but tomfoolery. But this tomfoolery, having passed through a very expensive machine, is somehow ennobled, and no one dares to criticize it.",
-    "corollary":"An expert is a person who avoids the small errors while sweeping on to the Grand Fallacy."
+    "corollary":{
+      "law":"An expert is a person who avoids the small errors while sweeping on to the Grand Fallacy."
+    }
   },
   {
     "title":"Laws of Gardening",
@@ -1361,7 +1391,9 @@
   {
     "title":"Gell-Mann's Dictum",
     "law":"Whatever isn't forbidden is required.",
-    "corollary":"If there's no reason why something shouldn't exist, then it must exist."
+    "corollary":{
+      "law":"If there's no reason why something shouldn't exist, then it must exist."
+    }
   },
   {
     "title":"Law of Generalizations",
@@ -1589,12 +1621,24 @@
     "title":"Gumperson's Law",
     "law":"The probability of anything happening is in inverse ratio to its desirability.",
     "corollaries":[
-      "After a salary raise, you will have less money at the end of the month than you had before.",
-      "The more a recruit knows about a given subject, the better chance he has of being assigned to something else.",
-      "You can throw a burnt match out the window of your car and start a forest fire, but you can use two boxes of matches and a whole edition of the Sunday paper without being able to start a fire under the dry logs in your fireplace.",
-      "Children have more energy after a hard day of play than they do after a good night's sleep.",
-      "The person who buys the most raffle tickets has the least chance of winning.",
-      "Good parking places are always on the other side of the street."
+      {
+        "law":"After a salary raise, you will have less money at the end of the month than you had before."
+      },
+      {
+        "law":"The more a recruit knows about a given subject, the better chance he has of being assigned to something else."
+      },
+      {
+        "law":"You can throw a burnt match out the window of your car and start a forest fire, but you can use two boxes of matches and a whole edition of the Sunday paper without being able to start a fire under the dry logs in your fireplace."
+      },
+      {
+        "law":"Children have more energy after a hard day of play than they do after a good night's sleep."
+      },
+      {
+        "law":"The person who buys the most raffle tickets has the least chance of winning."
+      },
+      {
+        "law":"Good parking places are always on the other side of the street."
+      }
     ]
   },
   {
@@ -1788,14 +1832,20 @@
   {
     "title":"The Ike Tautology",
     "law":"Things are more like they are now than they have ever been before.",
-    "corollary":"Nostalgia isn't what it used to be."
+    "corollary":{
+      "law":"Nostalgia isn't what it used to be."
+    }
   },
   {
     "title":"Iles's Law",
-    "law":"There is an easier way to do it. Corollaries",
-    "laws":[
-      "When looking directly at the easier way, especially for long periods, you will not see it.",
-      "Neither will Iles."
+    "law":"There is an easier way to do it. ",
+    "corollaries":[
+      {
+        "law":"When looking directly at the easier way, especially for long periods, you will not see it."
+      },
+      {
+        "law":"Neither will Iles."
+      }
     ]
   },
   {
@@ -1931,7 +1981,9 @@
   {
     "title":"Johnson's Third Law",
     "law":"If you miss one issue of any magazine, it will be the issue containing the article, story, or installment you were most anxious to read.",
-    "corollary":"All of your friends either missed it, lost it, or threw it out."
+    "corollary":{
+      "law":"All of your friends either missed it, lost it, or threw it out."
+    }
   },
   {
     "title":"Johnson's First Law of Auto Repair",
@@ -2050,7 +2102,9 @@
   {
     "title":"Kharasch's Institutional Imperative",
     "law":"Every action or decision of an institution must be intended to keep the institution machinery working.",
-    "corollary":"The expert judgment of an institution, when the matter involved concerns continuation of the institution's operations, is totally predictable, and hence the finding is totally worthless."
+    "corollary":{
+      "law":"The expert judgment of an institution, when the matter involved concerns continuation of the institution's operations, is totally predictable, and hence the finding is totally worthless."
+    }
   },
   {
     "title":"Kirkland's Law",
@@ -2108,7 +2162,9 @@
   {
     "title":"Knowles's Law of Legislative Deliberation",
     "law":"The length of debate varies inversely with the complexity of the issue.",
-    "corollary":"When the issue is trivial, and everyone understands it, debate is almost interminable."
+    "corollary":{
+      "law":"When the issue is trivial, and everyone understands it, debate is almost interminable."
+    }
   },
   {
     "title":"Kohn's Second Law",
@@ -2141,7 +2197,9 @@
   {
     "title":"LaCombe's Rule of Percentages",
     "law":"The incidence of anything worthwhile is either 15-25 percent or 80-90 percent.",
-    "corollary":"(Dudenhoefer): An answer of 50 percent will suffice for the 40-60 range."
+    "corollary":{
+      "law":"(Dudenhoefer): An answer of 50 percent will suffice for the 40-60 range."
+    }
   },
   {
     "title":"Langin's Law",
@@ -2178,7 +2236,9 @@
   {
     "title":"Leahy's Law",
     "law":"If a thing is done wrong often enough, it becomes right.",
-    "corollary":"Volume is a defense to error."
+    "corollary":{
+      "law":"Volume is a defense to error."
+    }
   },
   {
     "title":"Le Chatelier's Law",
@@ -2302,8 +2362,12 @@
     "title":"Law of the Lost Inch",
     "law":"In designing any type of construction, no overall dimension can be totalled correctly after 4:40 p.m. on Friday.",
     "corollaries":[
-      "Under the same conditions, if any minor dimensions are given to sixteenths of an inch, they cannot be totalled at all.",
-      "The correct total will become self-evident at 9:01 a.m. on Monday."
+      {
+        "law":"Under the same conditions, if any minor dimensions are given to sixteenths of an inch, they cannot be totalled at all."
+      },
+      {
+        "law":"The correct total will become self-evident at 9:01 a.m. on Monday."
+      }
     ]
   },
   {
@@ -2363,10 +2427,15 @@
   },
   {
     "title":"Maier's Law",
-    "law":"If the facts do not conform to the theory, they must be disposed of. Corollaries",
-    "laws":[
-      "The bigger the theory, the better.",
-      "The experiment may be considered a success if no more than 50% of the observed measurements must be discarded to obtain a correspondence with the theory. (Compensation Corollary)"
+    "law":"If the facts do not conform to the theory, they must be disposed of.",
+    "corollaries":[
+      {
+        "law":"The bigger the theory, the better."
+      },
+      {
+        "title":"Compensation Corollary",
+        "law":"The experiment may be considered a success if no more than 50% of the observed measurements must be discarded to obtain a correspondence with the theory."
+      }
     ]
   },
   {
@@ -2576,8 +2645,12 @@
     "title":"Mills's Law of Transportation Logistics",
     "law":"The distance to the gate from which your flight departs is inversely proportional to the time remaining before the scheduled departure of the flight.",
     "corollaries":[
-      "This remains true even as you rush to catch the flight.",
-      "From this it follows that you are invariably rushing the wrong way."
+      {
+        "law":"This remains true even as you rush to catch the flight."
+      },
+      {
+        "law":"From this it follows that you are invariably rushing the wrong way."
+      }
     ]
   },
   {
@@ -2683,7 +2756,9 @@
   {
     "title":"Noble's Law of Political Imagery",
     "law":"All other things being equal, a bald man cannot be elected President of the United States.",
-    "corollary":"Given a choice between two bald political candidates, the American people will vote for the less bald of the two."
+    "corollary":{
+      "law":"Given a choice between two bald political candidates, the American people will vote for the less bald of the two."
+    }
   },
   {
     "title":"North Carolina Equine Paradox",
@@ -2692,7 +2767,9 @@
   {
     "title":"No. 3 Pencil Principle",
     "law":"Make it sufficiently difficult for people to do something, and most people will stop doing it.",
-    "corollary":"If no one uses something, it isn't needed."
+    "corollary":{
+      "law":"If no one uses something, it isn't needed."
+    }
   },
   {
     "title":"Nursing Mother Principle",
@@ -2920,7 +2997,9 @@
   {
     "title":"Paturi Principle",
     "law":"Success is the result of behavior that completely contradicts the usual expectations about the behavior of a successful person.",
-    "corollary":"The amount of success is in inverse proportion to the effort involved in attaining it."
+    "corollary":{
+      "law":"The amount of success is in inverse proportion to the effort involved in attaining it."
+    }
   },
   {
     "title":"Paul Principle",
@@ -2985,11 +3064,17 @@
   },
   {
     "title":"Peter Principle",
-    "law":"In every hierarchy, whether it be government or business, each employee tends to rise to his level of incompetence; every post tends to be filled by an employee incompetent to execute its duties. Corollaries",
-    "laws":[
-      "Incompetence knows no barriers of time or place.",
-      "Work is accomplished by those employees who have not yet reached their level of incompetence.",
-      "If at first you don't succeed, try something else."
+    "law":"In every hierarchy, whether it be government or business, each employee tends to rise to his level of incompetence; every post tends to be filled by an employee incompetent to execute its duties.",
+    "corollaries":[
+      {
+        "law":"Incompetence knows no barriers of time or place."
+      },
+      {
+        "law":"Work is accomplished by those employees who have not yet reached their level of incompetence."
+      },
+      {
+        "law":"If at first you don't succeed, try something else."
+      }
     ]
   },
   {
@@ -3202,7 +3287,9 @@
   {
     "title":"Puritan's Law",
     "law":"Evil is live spelled backwards.",
-    "corollary":"If it feels good, don't do it."
+    "corollary":{
+      "law":"If it feels good, don't do it."
+    }
   },
   {
     "title":"Putney's Law",
@@ -3283,7 +3370,9 @@
   {
     "title":"First Law of Revision",
     "law":"Information necessitating a change of design will be conveyed to the designer after -- and only after -- the plans are complete. (Often called the \"Now they tell us!\" Law.)",
-    "corollary":"In simple cases, presenting one obvious right way versus one obvious wrong way, it is often wiser to choose the wrong way, so as to expedite subsequent revision."
+    "corollary":{
+      "law":"In simple cases, presenting one obvious right way versus one obvious wrong way, it is often wiser to choose the wrong way, so as to expedite subsequent revision."
+    }
   },
   {
     "title":"Second Law of Revision",
@@ -3292,7 +3381,9 @@
   {
     "title":"Third Law of Revision",
     "law":"If, when completion of a design is imminent, field dimensions are finally supplied as they actually are -- instead of as they were meant to be -- it is always easier to start all over.",
-    "corollary":"It is usually impractical to worry beforehand about interferences -- if you have none, someone will make one for you."
+    "corollary":{
+      "law":"It is usually impractical to worry beforehand about interferences -- if you have none, someone will make one for you."
+    }
   },
   {
     "title":"Fourth Law of Revision",
@@ -3471,7 +3562,9 @@
   {
     "title":"Scott's Second Law",
     "law":"When an error has been detected and corrected, it will be found to have been correct in the first place.",
-    "corollary":"After the correction has been found in error, it will be impossible to fit the original quantity back into the equation."
+    "corollary":{
+      "law":"After the correction has been found in error, it will be impossible to fit the original quantity back into the equation."
+    }
   },
   {
     "title":"Screwdriver Syndrome",
@@ -3633,7 +3726,9 @@
   {
     "title":"Sodd's Second Law",
     "law":"Sooner or later, the worst possible set of circumstances is bound to occur.",
-    "corollary":"Any system must be designed to withstand the worst possible set of circumstances."
+    "corollary":{
+      "law":"Any system must be designed to withstand the worst possible set of circumstances."
+    }
   },
   {
     "title":"Sodd's Other Law",
@@ -3750,7 +3845,9 @@
   {
     "title":"Thinking Man's Tautology",
     "law":"If you think you're wrong, you're wrong.",
-    "corollary":"If you think you're wrong, you're right."
+    "corollary":{
+      "law":"If you think you're wrong, you're right."
+    }
   },
   {
     "title":"Thoreau's Law",
@@ -3887,7 +3984,9 @@
   {
     "title":"Lucy Van Pelt's Observation",
     "law":"There must be one day above all others in each life that is the happiest.",
-    "corollary":"What if you've already had it?"
+    "corollary":{
+      "law":"What if you've already had it?"
+    }
   },
   {
     "title":"Vique's Law",
@@ -3979,7 +4078,9 @@
   {
     "title":"Weinberg's Law",
     "law":"If builders built buildings the way programmers wrote programs, then the first woodpecker that came along would destroy civilization.",
-    "corollary":"An expert is a person who avoids the small errors while sweeping on to the grand fallacy."
+    "corollary":{
+      "law":"An expert is a person who avoids the small errors while sweeping on to the grand fallacy."
+    }
   },
   {
     "title":"Weisman's Law of Examinations",
@@ -4020,7 +4121,9 @@
   {
     "title":"Whole Picture Principle",
     "law":"Research scientists are so wrapped up in their own narrow endeavors that they cannot possibly see the whole picture of anything, including their own research.",
-    "corollary":"The Director of Research should know as little as possible about the specific subject of research he is administering."
+    "corollary":{
+      "law":"The Director of Research should know as little as possible about the specific subject of research he is administering."
+    }
   },
   {
     "title":"Wicker's Law",
@@ -4161,7 +4264,9 @@
   {
     "title":"Young's Law",
     "law":"All great discoveries are made by mistake.",
-    "corollary":"The greater the funding, the longer it takes to make the mistake."
+    "corollary":{
+      "law":"The greater the funding, the longer it takes to make the mistake."
+    }
   },
   {
     "title":"Zellar's Law",

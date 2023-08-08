@@ -1,6 +1,7 @@
 import random
+import os
 
-from flask import Flask, Response
+from flask import Flask, Response,send_from_directory
 from utils.config import *
 from utils.load_data import *
 
@@ -25,6 +26,11 @@ def set_response(laws):
     response.headers['X-Robots-Tag'] = 'noindex'
 
     return response
+
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory(os.path.join(app.root_path, 'static'),
+                               'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
 @app.route("/")
 @app.route("/<number>")

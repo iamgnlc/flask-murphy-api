@@ -1,26 +1,16 @@
 import random
 import os
 
-from flask import Flask, Response,send_from_directory
+from flask import Flask, Response, abort
 from utils.config import *
 from utils.load_data import *
 from utils.logo import logo
 from utils.show_env import show_env
+from utils.validate import validate
 
 app = Flask(__name__)
 
 logo()
-
-def validate(number):
-    number = int(number)
-
-    if number > MAX_LAWS:
-        number = MAX_LAWS
-
-    if number < 1:
-        number = 1
-
-    return number
 
 def show_laws(laws):
     headers = {
@@ -44,9 +34,13 @@ def env():
 @app.route("/")
 @app.route("/<number>")
 def main(number = 1):
-    number = validate(number)
+    number = validate(number, 1, MAX_LAWS)
 
     laws = random.sample(data, number)
     response = show_laws(laws)
 
     return response
+
+@app.route('/*')
+def get():
+    abort(404)

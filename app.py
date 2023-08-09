@@ -36,6 +36,8 @@ def env():
 def main(number = 1):
     number = validate(number, 1, MAX_LAWS)
 
+    print(type(data))
+
     laws = random.sample(data, number)
     response = show_laws(laws)
 

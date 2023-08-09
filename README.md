@@ -31,3 +31,13 @@ Or
 ```sh
 yarn start
 ```
+
+## Tests
+
+```sh
+pytest
+```
+
+---
+
+![author](https://img.shields.io/badge/author-iamgnlc-blueviolet)

@@ -1,11 +1,11 @@
 import random
 import os
 
-from flask import Flask, Response, abort
+from flask import Flask, Response, abort, request
 from utils.config import *
 from utils.load_data import *
 from utils.logo import logo
-from utils.show_env import show_env
+from utils.show_env import show_env, auth
 from utils.validate import validate
 
 app = Flask(__name__)
@@ -27,8 +27,12 @@ def show_laws(laws):
 
     return response
 
+# Show env vars only if authorized.
 @app.route("/env")
 def env():
+    key = request.args.get('key')
+    auth(key)
+
     return show_env()
 
 @app.route("/")
@@ -36,13 +40,12 @@ def env():
 def main(number = 1):
     number = validate(number, 1, MAX_LAWS)
 
-    print(type(data))
-
     laws = random.sample(data, number)
     response = show_laws(laws)
 
     return response
 
+# Catch all 404.
 @app.route('/*')
 def get():
     abort(404)

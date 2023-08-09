@@ -23,7 +23,7 @@ yarn setup
 ## Start app
 
 ```sh
-flask --app murphy.py --debug run
+flask --app app.py --debug run
 ```
 
 Or

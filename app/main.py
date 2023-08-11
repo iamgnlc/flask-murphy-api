@@ -1,9 +1,9 @@
 import random
-import os
+import json
 
 from flask import Flask, Response, abort, request
-from utils.config import *
-from utils.load_data import *
+from utils.config import AUTHOR, MAX_LAWS
+from utils.load_data import data
 from utils.logo import logo
 from utils.show_env import show_env, auth
 from utils.validate import validate

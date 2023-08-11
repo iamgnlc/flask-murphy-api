@@ -1,7 +1,7 @@
 import os
 
-from flask import request, abort
-from utils.config import *
+from flask import abort
+from utils.config import SHOW_ENV_KEY
 
 def auth(key):
     if key is None or key != SHOW_ENV_KEY:

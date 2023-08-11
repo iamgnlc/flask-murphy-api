@@ -3,7 +3,7 @@ import json
 
 from flask import Flask, Response, abort, request
 from utils.config import AUTHOR, MAX_LAWS
-from utils.load_data import data
+from utils.load_data import load_data
 from utils.logo import logo
 from utils.show_env import show_env, auth
 from utils.validate import validate
@@ -11,6 +11,8 @@ from utils.validate import validate
 app = Flask(__name__)
 
 logo()
+
+data = load_data()
 
 def show_laws(laws):
     headers = {

@@ -1,5 +1,7 @@
 # Murphy's Laws Random Quote API
 
+![example workflow](https://github.com/iamgnlc/flask-murphy-api/actions/workflows/ci-cd.yml/badge.svg)
+
 ## Getting Started
 
 ```sh

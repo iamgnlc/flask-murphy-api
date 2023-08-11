@@ -25,7 +25,7 @@ yarn setup
 ## Start app
 
 ```sh
-flask --app app.py --debug run
+flask --app app/main.py --debug run
 ```
 
 Or

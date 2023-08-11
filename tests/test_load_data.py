@@ -1,4 +1,4 @@
-from utils.load_data import load_data
+from app.utils.load_data import load_data
 
 
 def test_load_data():

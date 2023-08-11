@@ -1,4 +1,4 @@
-from utils.validate import validate
+from app.utils.validate import validate
 
 def test_max():
     # it should return max number allowed

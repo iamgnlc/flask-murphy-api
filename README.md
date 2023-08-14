@@ -22,7 +22,7 @@ Or
 yarn setup
 ```
 
-## Start app
+## Run app in dev
 
 ```sh
 flask --app app/main.py --debug run
@@ -31,8 +31,22 @@ flask --app app/main.py --debug run
 Or
 
 ```sh
+yarn dev
+```
+
+## Run app in prod
+
+```sh
+python server.py
+```
+
+Or
+
+```sh
 yarn start
 ```
+
+**NOTE:** It uses `waitress` server.
 
 ## Tests
 

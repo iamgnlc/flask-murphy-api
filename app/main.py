@@ -2,7 +2,7 @@ import random
 import json
 
 from flask import Flask, Response, abort, request
-from app.utils.config import AUTHOR, MAX_LAWS
+from app import AUTHOR, MAX_LAWS
 from app.utils.load_data import load_data
 from app.utils.logo import logo
 from app.utils.show_env import show_env, auth

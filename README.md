@@ -2,6 +2,8 @@
 
 ![example workflow](https://github.com/iamgnlc/flask-murphy-api/actions/workflows/ci-cd.yml/badge.svg)
 
+Returns random Murphy's Law quote(s).
+
 ## Getting Started
 
 ```sh

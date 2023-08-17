@@ -2,12 +2,8 @@ import random
 import json
 
 from flask import Flask, Response, request
-from app import AUTHOR, MAX_LAWS
-from app.utils.load_data import load_data
-from app.utils.logo import logo
-from app.utils.show_env import show_env, auth
-from app.utils.validate import validate
-from app.utils.error import custom_error
+from app import AUTHOR, MAX_LAWS, SHOW_ENV_KEY
+from app.utils import load_data, logo, show_env, validate
 
 app = Flask(__name__)
 
@@ -30,22 +26,27 @@ def show_laws(laws):
 
     return response
 
+def error_message(code, message):
+    return {'code': code, 'message': message}
+
 # Show env vars only if authorized.
 @app.route("/env")
 def env():
     key = request.args.get('key')
-    is_auth = auth(key)
-
-    if is_auth:
-        return show_env()
-    else:
+    if key is None or key != SHOW_ENV_KEY:
         error_code = 403
-        return custom_error({'status': error_code, 'message': 'Not Authorized'}, error_code)
+        return error_message(error_code, 'Not Authorized'), error_code
+
+    return show_env()
 
 @app.route("/")
 @app.route("/<number>")
 def main(number = 1):
     number = validate(number, 1, MAX_LAWS)
+
+    if number is False:
+        error_code = 404
+        return error_message(error_code, 'Not Found'), error_code
 
     laws = random.sample(data, number)
     response = show_laws(laws)
@@ -55,4 +56,5 @@ def main(number = 1):
 # Catch 404.
 @app.errorhandler(404)
 def page_not_found(e):
-    return custom_error({'status': e.code, 'message': str(e.description)}, e.code)
+    error_code = 404
+    return error_message(error_code, 'Not Found'), error_code

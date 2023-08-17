@@ -9,3 +9,8 @@ def test_min():
     # it should return min number allowed
     number = validate(-1, 1, 10)
     assert number == 1
+
+def test_exception():
+    # it should return min number allowed
+    number = validate('string', 1, 10)
+    assert number is False

@@ -4,6 +4,7 @@ import json
 from flask import Flask, Response, request
 from app import AUTHOR, MAX_LAWS, SHOW_ENV_KEY
 from app.utils import load_data, print_logo, show_env, validate
+from app.utils import not_found, not_authorized
 
 app = Flask(__name__)
 
@@ -26,16 +27,13 @@ def show_laws(laws):
 
     return response
 
-def error_message(code, message):
-    return {'code': code, 'message': message}
 
 # Show env vars only if authorized.
 @app.route("/env")
 def env():
     key = request.args.get('key')
     if key is None or key != SHOW_ENV_KEY:
-        error_code = 403
-        return error_message(error_code, 'Not Authorized'), error_code
+        return not_authorized()
 
     return show_env()
 
@@ -45,8 +43,7 @@ def main(number = 1):
     number = validate(number, 1, MAX_LAWS)
 
     if number is False:
-        error_code = 404
-        return error_message(error_code, 'Not Found'), error_code
+        return not_found()
 
     laws = random.sample(data, number)
     response = show_laws(laws)
@@ -56,5 +53,4 @@ def main(number = 1):
 # Catch 404.
 @app.errorhandler(404)
 def page_not_found(e):
-    error_code = 404
-    return error_message(error_code, 'Not Found'), error_code
+    return not_found()

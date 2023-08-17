@@ -1,4 +1,4 @@
-from app.utils.print_logo import print_logo, LOGO
+from app.utils import print_logo
 
 def test_foo(capfd):
     # it should print an output.

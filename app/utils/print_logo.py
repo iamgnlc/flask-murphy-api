@@ -1,10 +1,9 @@
 from colorama import Fore, Style
 
-LOGO = """
-┌┬┐┬ ┬┬─┐┌─┐┬ ┬┬ ┬ ┐┌─┐  ┬  ┌─┐┬ ┬
-││││ │├┬┘├─┘├─┤└┬┘  └─┐  │  ├─┤│││
-┴ ┴└─┘┴└─┴  ┴ ┴ ┴   └─┘  ┴─┘┴ ┴└┴┘
-"""
-
 def print_logo():
-    print(Fore.BLUE + LOGO + Style.RESET_ALL)
+    logo = """
+    ┌┬┐┬ ┬┬─┐┌─┐┬ ┬┬ ┬ ┐┌─┐  ┬  ┌─┐┬ ┬
+    ││││ │├┬┘├─┘├─┤└┬┘  └─┐  │  ├─┤│││
+    ┴ ┴└─┘┴└─┴  ┴ ┴ ┴   └─┘  ┴─┘┴ ┴└┴┘
+    """
+    print(Fore.BLUE + logo + Style.RESET_ALL)

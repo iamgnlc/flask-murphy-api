@@ -13,37 +13,19 @@ python3 -m venv .venv
 ## Install dependencies
 
 ```sh
-pip install -r requirements.txt
-```
-
-Or
-
-```sh
-yarn setup
+make install
 ```
 
 ## Run app in dev
 
 ```sh
-flask --app app/main.py --debug run
-```
-
-Or
-
-```sh
-yarn dev
+make dev
 ```
 
 ## Run app in prod
 
 ```sh
-python server.py
-```
-
-Or
-
-```sh
-yarn start
+make start
 ```
 
 **NOTE:** It uses `waitress` server.
@@ -51,7 +33,7 @@ yarn start
 ## Tests
 
 ```sh
-pytest
+make test
 ```
 
 ---

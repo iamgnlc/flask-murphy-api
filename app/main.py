@@ -3,11 +3,11 @@ import json
 
 from flask import Flask, Response, request
 from app import AUTHOR, MAX_LAWS, SHOW_ENV_KEY
-from app.utils import load_data, logo, show_env, validate
+from app.utils import load_data, print_logo, show_env, validate
 
 app = Flask(__name__)
 
-logo()
+print_logo()
 
 data = load_data()
 

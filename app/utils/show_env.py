@@ -1,11 +1,14 @@
 import os
 
-from app import SHOW_ENV_KEY
 from flask import abort
+from app import SHOW_ENV_KEY
+from app.utils.error import custom_error
 
 def auth(key):
     if key is None or key != SHOW_ENV_KEY:
-        abort(404)
+        return False
+    
+    return True
 
 def show_env():
     response = {}

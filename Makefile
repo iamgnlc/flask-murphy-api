@@ -7,6 +7,9 @@ dev:
 install:
 		pip install -r requirements.txt
 
+lint:
+		ruff .
+
 start:
 		python server.py
 

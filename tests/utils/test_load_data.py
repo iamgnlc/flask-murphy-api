@@ -4,3 +4,4 @@ def test_load_data():
     # it should load data from json.
     data = load_data()
     assert type(data) is list
+    assert len(data) > 0

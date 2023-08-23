@@ -29,7 +29,7 @@ def show_laws(laws):
         headers = headers
     )
 
-def send_response(payload, status = 200, headers = {}):
+def send_response(payload, status = 200, headers = default_headers):
     response = Response(
         json.dumps(payload),
         mimetype = 'application/json',
@@ -46,7 +46,6 @@ def env():
     if key is None or key != SHOW_ENV_KEY:
         return send_response(
             payload = not_authorized(),
-            headers = default_headers,
             status = 403
         )
 
@@ -61,7 +60,6 @@ def main(number = 1):
     if number is False:
         return send_response(
             payload = not_found(),
-            headers = default_headers,
             status = 404
         )
 
@@ -75,6 +73,5 @@ def main(number = 1):
 def page_not_found(e):
     return send_response(
         payload = not_found(),
-        headers = default_headers,
         status = 404
     )

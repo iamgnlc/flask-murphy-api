@@ -12,18 +12,17 @@ print_logo()
 
 data = load_data()
 
-headers = {
+default_headers = {
     'X-Author': AUTHOR,
     'X-Robots-Tag': 'noindex',
 }
 
 def show_laws(laws):
-    headers = {
-        'X-Author': AUTHOR,
+    custom_headers = {
         'X-Count': len(laws),
         'X-Total-Count': len(data),
-        'X-Robots-Tag': 'noindex',
     }
+    headers = { **default_headers, **custom_headers}
 
     return send_response(
         payload = laws,
@@ -47,7 +46,7 @@ def env():
     if key is None or key != SHOW_ENV_KEY:
         return send_response(
             payload = not_authorized(),
-            headers = headers,
+            headers = default_headers,
             status = 403
         )
 
@@ -62,7 +61,7 @@ def main(number = 1):
     if number is False:
         return send_response(
             payload = not_found(),
-            headers = headers,
+            headers = default_headers,
             status = 404
         )
 
@@ -76,6 +75,6 @@ def main(number = 1):
 def page_not_found(e):
     return send_response(
         payload = not_found(),
-        headers = headers,
+        headers = default_headers,
         status = 404
     )

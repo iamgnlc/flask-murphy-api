@@ -1,3 +1,6 @@
+activate:
+		. .venv/bin/activate
+
 clean:
 		./clean.sh
 

@@ -1,7 +1,11 @@
-import random
 import json
+import random
+import signal
+import sys
 
 from flask import Flask, Response, request
+from colorama import Fore, Style
+
 from app import AUTHOR, MAX_LAWS, SHOW_ENV_KEY
 from app.utils import load_data, print_logo, show_env, validate
 from app.utils import not_found, not_authorized
@@ -16,7 +20,6 @@ default_headers = {
     'X-Author': AUTHOR,
     'X-Robots-Tag': 'noindex',
 }
-
 def show_laws(laws):
     custom_headers = {
         'X-Count': len(laws),
@@ -75,3 +78,11 @@ def page_not_found(e):
         payload = not_found(),
         status = 404
     )
+
+def sig_handler(signal, frame):
+    print(Fore.RED + "Shutdown" + Style.RESET_ALL)
+    sys.exit(0)
+
+signal.signal(signal.SIGINT, sig_handler)
+signal.signal(signal.SIGTERM, sig_handler)
+

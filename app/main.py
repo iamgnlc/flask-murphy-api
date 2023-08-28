@@ -79,10 +79,9 @@ def page_not_found(e):
         status = 404
     )
 
-def sig_handler(signal, frame):
-    print(Fore.RED + "Shutdown" + Style.RESET_ALL)
+def sigint(signal, frame):
+    print(Fore.RED + "Server terminated." + Style.RESET_ALL)
     sys.exit(0)
 
-signal.signal(signal.SIGINT, sig_handler)
-signal.signal(signal.SIGTERM, sig_handler)
+signal.signal(signal.SIGINT, sigint)
 

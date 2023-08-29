@@ -1,5 +1,6 @@
 from colorama import Fore, Style
 
+
 def print_logo():
     logo = """
 ┌┬┐┬ ┬┬─┐┌─┐┬ ┬┬ ┬ ┐┌─┐  ┬  ┌─┐┬ ┬

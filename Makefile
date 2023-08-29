@@ -7,6 +7,10 @@ clean:
 dev:
 		flask --app app/main.py --debug run
 
+format:
+		black .
+
+
 install:
 		pip install -r requirements.txt
 

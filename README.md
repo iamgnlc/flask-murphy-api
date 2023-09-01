@@ -1,7 +1,5 @@
 # Murphy's Laws Random Quote API
 
-Test
-
 ![ci-cd](https://github.com/iamgnlc/flask-murphy-api/actions/workflows/ci-cd.yml/badge.svg)
 
 Returns random Murphy's Law quote(s).

@@ -5,6 +5,7 @@ import sys
 
 from flask import Flask, Response, request
 from colorama import Fore, Style
+from threading import Thread
 
 from app import AUTHOR, MAX_LAWS, SHOW_ENV_KEY, CACHE_ENABLED
 from app.utils import load_data, print_logo, show_env, validate, update_cache
@@ -62,7 +63,7 @@ def main(number=1):
     laws = random.sample(data, number)
 
     if bool(int(CACHE_ENABLED)):
-        update_cache(laws)
+        Thread(target=update_cache, args=(laws,)).start()
 
     return show_laws(laws)
 

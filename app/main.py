@@ -6,7 +6,7 @@ import sys
 from flask import Flask, Response, request
 from colorama import Fore, Style
 
-from app import AUTHOR, MAX_LAWS, SHOW_ENV_KEY
+from app import AUTHOR, MAX_LAWS, SHOW_ENV_KEY, CACHE_ENABLED
 from app.utils import load_data, print_logo, show_env, validate, update_cache
 from app.utils import not_found, not_authorized
 
@@ -60,7 +60,10 @@ def main(number=1):
         return send_response(payload=not_found(), status=404)
 
     laws = random.sample(data, number)
-    update_cache(laws)
+
+    if bool(int(CACHE_ENABLED)):
+        update_cache(laws)
+
     return show_laws(laws)
 
 

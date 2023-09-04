@@ -1,6 +1,5 @@
 import json
 import redis
-import hashlib
 import re
 import random
 import string

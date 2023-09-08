@@ -1,1 +1,4 @@
+[tool.black]
+
+[tool.ruff]
 ignore-init-module-imports = true

@@ -2,9 +2,11 @@
 
 ![ci-cd](https://github.com/iamgnlc/flask-murphy-api/actions/workflows/ci-cd.yml/badge.svg)
 
-Returns random Murphy's Law quote(s).
+Returns random Murphy's Law quote(s). Store on a Redis cache backend conditionally.
 
 ## Getting Started
+
+### Create virtual env
 
 ```sh
 python3 -m venv .venv
@@ -12,31 +14,46 @@ python3 -m venv .venv
 . .venv/bin/activate
 ```
 
-## Install dependencies
+### Install dependencies
 
 ```sh
 make install
 ```
 
-## Run app in dev
+### Run app in dev
 
 ```sh
 make dev
 ```
 
-## Run app in prod
+### Run app in prod
 
 ```sh
 make start
 ```
 
-**NOTE:** It uses `waitress` server.
-
-## Tests
+### Tests
 
 ```sh
 make test
 ```
+
+### Lint
+
+```sh
+make lint
+```
+
+**NOTE:** It uses `ruff`.
+
+### Format
+
+```sh
+make format
+```
+
+**NOTE:** It uses `black`.
+
 
 ---
 

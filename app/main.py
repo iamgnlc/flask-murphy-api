@@ -23,6 +23,10 @@ default_headers = {
 }
 
 
+def is_cache_enabled():
+    return bool(int(CACHE_ENABLED))
+
+
 def show_laws(laws):
     custom_headers = {
         "X-Count": len(laws),
@@ -62,8 +66,11 @@ def main(number=1):
 
     laws = random.sample(data, number)
 
-    if bool(int(CACHE_ENABLED)):
-        Thread(target=update_cache, args=(laws,)).start()
+    if is_cache_enabled():
+        Thread(
+            target=update_cache,
+            args=(laws,),
+        ).start()
 
     return show_laws(laws)
 

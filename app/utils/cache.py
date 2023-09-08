@@ -21,10 +21,10 @@ def get_key():
     return str(re.sub("[^0-9]", "", key)) + salt
 
 
-def update_cache(laws):
+def update_cache(laws, ttl=int(CACHE_TTL)):
     for law in laws:
         key = get_key()
         try:
-            cache.set(key, json.dumps(law), ex=int(CACHE_TTL))
+            cache.set(key, json.dumps(law), ex=ttl)
         except redis.ConnectionError:
             continue

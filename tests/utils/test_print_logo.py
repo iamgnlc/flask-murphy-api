@@ -1,7 +1,7 @@
 from app.utils import print_logo
 
 
-def test_foo(capfd):
+def test_print_logo(capfd):
     # it should print an output.
     print_logo()
     out, err = capfd.readouterr()

@@ -21,7 +21,7 @@ def get_key():
     return str(re.sub("[^0-9]", "", key)) + salt
 
 
-def update_cache(laws, ttl=int(CACHE_TTL)):
+def update_cache(laws, ttl: int = 300):
     for law in laws:
         key = get_key()
         try:

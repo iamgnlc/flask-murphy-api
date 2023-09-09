@@ -1,3 +1,1 @@
-find . | grep -E "(/__pycache__$|\.pyc$|\.pyo$)" | xargs rm -rf
-rm -rf .pytest_cache
-rm -rf .ruff_cache
+find . | grep -E "(/__pycache__$|.pytest_cache|.ruff_cache|\.pyc$|\.pyo$)" | xargs rm -rf

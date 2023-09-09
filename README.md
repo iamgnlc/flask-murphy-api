@@ -57,4 +57,4 @@ make format
 
 ---
 
-![author](https://img.shields.io/badge/author-iamgnlc-blueviolet)
+[![author](https://img.shields.io/badge/author-iamgnlc-blueviolet)](https://github.com/iamgnlc)

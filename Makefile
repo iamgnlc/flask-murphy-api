@@ -10,6 +10,9 @@ dev:
 format:
 		black .
 
+freeze:
+		pip freeze -l > requirements.txt
+
 install:
 		pip install -r requirements.txt
 

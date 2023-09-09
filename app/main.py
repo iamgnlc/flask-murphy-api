@@ -3,12 +3,13 @@ import random
 import signal
 import sys
 
-from flask import Flask, Response, request
 from colorama import Fore, Style
+from flask import Flask, Response, request
+from healthcheck import HealthCheck, EnvironmentDump
 from threading import Thread
 
 from app import AUTHOR, MAX_LAWS, SHOW_ENV_KEY, CACHE_ENABLED
-from app.utils import load_data, print_logo, show_env, validate, update_cache
+from app.utils import load_data, print_logo, validate, update_cache
 from app.utils import not_found, not_authorized
 
 app = Flask(__name__)
@@ -52,7 +53,13 @@ def env():
     if key is None or key != SHOW_ENV_KEY:
         return send_response(payload=not_authorized(), status=403)
 
-    return send_response(payload=show_env())
+    return EnvironmentDump().run()
+
+
+# Health check.
+@app.route("/health")
+def health():
+    return HealthCheck().run()
 
 
 # Show law(s).

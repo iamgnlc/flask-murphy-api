@@ -54,7 +54,6 @@ make format
 
 **NOTE:** It uses `black`.
 
-
 ---
 
 [![author](https://img.shields.io/badge/author-iamgnlc-blueviolet)](https://github.com/iamgnlc)

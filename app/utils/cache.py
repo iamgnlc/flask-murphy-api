@@ -22,7 +22,7 @@ def get_key():
 
 
 def update_cache(laws, ttl: int = CACHE_TTL):
-    ttl = int(ttl)
+    # ttl = int(ttl)
     for law in laws:
         key = get_key()
         try:

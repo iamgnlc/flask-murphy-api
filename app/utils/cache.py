@@ -6,7 +6,7 @@ import string
 
 from datetime import datetime
 
-from app import CACHE_HOST, CACHE_PASSWORD, CACHE_PORT
+from app import CACHE_HOST, CACHE_PASSWORD, CACHE_PORT, CACHE_TTL
 
 cache = redis.Redis(
     host=CACHE_HOST,
@@ -21,7 +21,8 @@ def get_key():
     return str(re.sub("[^0-9]", "", key)) + salt
 
 
-def update_cache(laws, ttl: int = 300):
+def update_cache(laws, ttl: int = CACHE_TTL):
+    ttl = int(ttl)
     for law in laws:
         key = get_key()
         try:

@@ -6,7 +6,7 @@ import string
 
 from datetime import datetime
 
-from app import CACHE_HOST, CACHE_PASSWORD, CACHE_PORT, CACHE_TTL
+from app import CACHE_HOST, CACHE_PASSWORD, CACHE_PORT
 
 cache = redis.Redis(
     host=CACHE_HOST,

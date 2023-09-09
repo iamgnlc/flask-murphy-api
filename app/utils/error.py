@@ -1,4 +1,4 @@
-def error_message(code, message):
+def error_message(code: int, message: str):
     return {"code": code, "message": str(message)}
 
 

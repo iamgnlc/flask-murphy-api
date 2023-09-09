@@ -37,7 +37,7 @@ def show_laws(laws):
     return send_response(payload=laws, headers=headers)
 
 
-def send_response(payload, status=200, headers=default_headers):
+def send_response(payload, status: int = 200, headers=default_headers):
     response = Response(
         json.dumps(payload), mimetype="application/json", headers=headers, status=status
     )

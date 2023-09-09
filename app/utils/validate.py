@@ -1,4 +1,4 @@
-def validate(number, min=1, max=1):
+def validate(number: int, min: int = 1, max: int = 1):
     try:
         number = int(number)
     except ValueError:

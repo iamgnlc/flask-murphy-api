@@ -58,7 +58,7 @@ def env():
 # Show law(s).
 @app.route("/")
 @app.route("/<number>")
-def main(number=1):
+def main(number: int = 1):
     number = validate(number, 1, MAX_LAWS)
 
     if number is False:

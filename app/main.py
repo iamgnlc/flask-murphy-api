@@ -9,7 +9,7 @@ from healthcheck import HealthCheck, EnvironmentDump
 from threading import Thread
 
 from app import AUTHOR, MAX_LAWS, SHOW_ENV_KEY, CACHE_ENABLED
-from app.utils import load_data, print_logo, validate, update_cache, ping_cache
+from app.utils import load_data, print_logo, validate, Cache
 from app.utils import not_found, not_authorized
 
 app = Flask(__name__)
@@ -22,6 +22,10 @@ default_headers = {
     "X-Author": AUTHOR,
     "X-Robots-Tag": "noindex",
 }
+
+cache = Cache()
+environment_dump = EnvironmentDump()
+health_check = HealthCheck()
 
 
 def is_cache_enabled():
@@ -53,13 +57,13 @@ def env():
     if key is None or key != SHOW_ENV_KEY:
         return send_response(payload=not_authorized(), status=403)
 
-    return EnvironmentDump().run()
+    return environment_dump.run()
 
 
 # Health check.
 @app.route("/health")
 def health():
-    return HealthCheck().run()
+    return health_check.run()
 
 
 # Show law(s).
@@ -73,9 +77,9 @@ def main(number: int = 1):
 
     laws = random.sample(data, number)
 
-    if is_cache_enabled() and ping_cache():
+    if is_cache_enabled() and cache.ping():
         Thread(
-            target=update_cache,
+            target=cache.update,
             args=(laws,),
         ).start()
 

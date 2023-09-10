@@ -9,7 +9,7 @@ from healthcheck import HealthCheck, EnvironmentDump
 from threading import Thread
 
 from app import AUTHOR, MAX_LAWS, SHOW_ENV_KEY, CACHE_ENABLED
-from app.utils import load_data, print_logo, validate, update_cache
+from app.utils import load_data, print_logo, validate, update_cache, ping_cache
 from app.utils import not_found, not_authorized
 
 app = Flask(__name__)
@@ -73,7 +73,7 @@ def main(number: int = 1):
 
     laws = random.sample(data, number)
 
-    if is_cache_enabled():
+    if is_cache_enabled() and ping_cache():
         Thread(
             target=update_cache,
             args=(laws,),

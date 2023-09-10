@@ -15,6 +15,14 @@ cache = redis.Redis(
 )
 
 
+def ping_cache():
+    try:
+        cache.ping()
+        return True
+    except Exception:
+        return False
+
+
 def get_key():
     key = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S.%f")
     salt = "".join(random.choices(string.ascii_uppercase, k=6))

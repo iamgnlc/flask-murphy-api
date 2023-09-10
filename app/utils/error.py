@@ -1,5 +1,5 @@
 def error_message(code: int, message: str):
-    return {"code": code, "message": str(message)}
+    return {"code": code, "message": message}
 
 
 def not_found():

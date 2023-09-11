@@ -6,7 +6,7 @@ import string
 
 from datetime import datetime
 
-from app import CACHE_HOST, CACHE_PASSWORD, CACHE_PORT, CACHE_TTL
+from app import CACHE_HOST, CACHE_PASSWORD, CACHE_PORT, CACHE_TTL, CACHE_ENABLED
 
 
 class Cache:
@@ -16,6 +16,9 @@ class Cache:
             port=CACHE_PORT,
             password=CACHE_PASSWORD,
         )
+
+    def is_enabled(self):
+        return bool(int(CACHE_ENABLED))
 
     def ping(self):
         try:

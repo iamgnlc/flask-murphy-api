@@ -35,6 +35,9 @@ class Cache:
             except redis.ConnectionError:
                 continue
 
+    def flush(self):
+        return self.cache.flushall()
+
     def _get_key(self):
         key = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S.%f")
         salt = "".join(random.choices(string.ascii_uppercase, k=6))

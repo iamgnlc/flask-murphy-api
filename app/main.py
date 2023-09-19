@@ -66,6 +66,11 @@ def health():
     return health_check.run()
 
 
+@app.route("/flush")
+def flush():
+    return send_response({"flush": cache.flush()})
+
+
 # Show law(s).
 @app.route("/")
 @app.route("/<number>")

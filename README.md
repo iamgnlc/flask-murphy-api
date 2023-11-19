@@ -2,7 +2,7 @@
 
 ![ci-cd](https://github.com/iamgnlc/flask-murphy-api/actions/workflows/ci-cd.yml/badge.svg)
 
-Returns random Murphy's Law quote(s). Store on a Redis cache backend conditionally.
+Returns random Murphy's Law quote(s). Store on a Redis cache backend conditionally. Built with Flask.
 
 ## Getting Started
 

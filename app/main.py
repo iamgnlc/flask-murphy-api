@@ -30,13 +30,19 @@ cache = Cache()
 
 
 def show_laws(laws):
+    counters = {
+        "count": len(laws),
+        "total": len(data),
+    }
     custom_headers = {
-        "X-Count": len(laws),
-        "X-Total-Count": len(data),
+        "X-Count": counters["count"],
+        "X-Total-Count": counters["total"],
     }
     headers = {**default_headers, **custom_headers}
 
-    return send_response(payload=laws, headers=headers)
+    payload = {**counters, "data": laws}
+
+    return send_response(payload=payload, headers=headers)
 
 
 def send_response(payload, status: int = 200, headers=default_headers):

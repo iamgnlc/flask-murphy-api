@@ -2,12 +2,14 @@ import json
 import random
 import signal
 import sys
+import threading
 
 from camel_converter import dict_to_camel
 from colorama import Fore, Style
 from flask import Flask, Response, request
 from healthcheck import HealthCheck, EnvironmentDump
-from threading import Thread
+
+# from threading import Thread
 
 from app import AUTHOR, MAX_LAWS, SHOW_ENV_KEY
 from app.utils import load_data, print_logo, validate
@@ -97,10 +99,14 @@ def main(number: int = 1):
 
     # Push to cache if enabled and working.
     if cache.is_enabled() and cache.ping():
-        Thread(
-            target=cache.update,
-            args=(laws,),
-        ).start()
+        threads = list()
+        for law in laws:
+            t = threading.Thread(
+                target=cache.update,
+                args=(law,),
+            )
+            threads.append(t)
+            t.start()
 
     return show_laws(laws)
 

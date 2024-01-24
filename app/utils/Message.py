@@ -1,18 +1,19 @@
 class Message:
-    def ok(self):
-        code = 200
-        status = "success"
-        return self._error_message(code, status)
+    code = 200
+    status = "success"
+
+    def success(self):
+        return self.__error_message()
 
     def not_found(self):
-        code = 404
-        status = "not found"
-        return self._error_message(code, status)
+        self.code = 404
+        self.status = "not found"
+        return self.__error_message()
 
     def not_authorized(self):
-        code = 403
-        status = "not authorized"
-        return self._error_message(code, status)
+        self.code = 403
+        self.status = "not authorized"
+        return self.__error_message()
 
-    def _error_message(self, code, status):
-        return {"code": code, "status": status}
+    def __error_message(self):
+        return {"code": self.code, "status": self.status}

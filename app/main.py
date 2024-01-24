@@ -41,7 +41,7 @@ def show_laws(laws):
     }
     headers = {**default_headers, **custom_headers}
 
-    payload = {**message.ok(), **dict_to_camel(meta_data), "data": laws}
+    payload = {**message.success(), **dict_to_camel(meta_data), "data": laws}
 
     return send_response(payload=payload, headers=headers)
 
@@ -78,7 +78,7 @@ def health():
 
 @app.route("/flush")
 def flush():
-    return send_response({**message.ok(), "flush": cache.flush()})
+    return send_response({**message.success(), "flush": cache.flush()})
 
 
 # Show law(s).

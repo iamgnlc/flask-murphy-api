@@ -27,12 +27,13 @@ class Cache:
         except Exception:
             return False
 
-    def update(self, law, ttl: int = CACHE_TTL):
-        key = self._get_key()
-        try:
-            self.cache.set(key, json.dumps(law), ex=ttl)
-        except redis.ConnectionError:
-            self.update(self, law)
+    def update(self, laws, ttl: int = CACHE_TTL):
+        for law in laws:
+            key = self._get_key()
+            try:
+                self.cache.set(key, json.dumps(law), ex=ttl)
+            except redis.ConnectionError:
+                continue
 
     def flush(self):
         return self.cache.flushall()

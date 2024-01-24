@@ -3,6 +3,7 @@ import random
 import signal
 import sys
 
+from camel_converter import dict_to_camel
 from colorama import Fore, Style
 from flask import Flask, Response, request
 from healthcheck import HealthCheck, EnvironmentDump
@@ -10,7 +11,7 @@ from threading import Thread
 
 from app import AUTHOR, MAX_LAWS, SHOW_ENV_KEY
 from app.utils import load_data, print_logo, validate
-from app.utils import Cache, Error
+from app.utils import Cache, Message
 
 app = Flask(__name__)
 
@@ -25,29 +26,32 @@ default_headers = {
 
 environment_dump = EnvironmentDump()
 health_check = HealthCheck()
-error = Error()
+message = Message()
 cache = Cache()
 
 
 def show_laws(laws):
-    counters = {
-        "count": len(laws),
-        "total": len(data),
+    meta_data = {
+        "return_count": len(laws),
+        "total_count": len(data),
     }
     custom_headers = {
-        "X-Count": counters["count"],
-        "X-Total-Count": counters["total"],
+        "X-Count": meta_data["return_count"],
+        "X-Total-Count": meta_data["total_count"],
     }
     headers = {**default_headers, **custom_headers}
 
-    payload = {**counters, "data": laws}
+    payload = {**message.ok(), **dict_to_camel(meta_data), "data": laws}
 
     return send_response(payload=payload, headers=headers)
 
 
 def send_response(payload, status: int = 200, headers=default_headers):
     response = Response(
-        json.dumps(payload), mimetype="application/json", headers=headers, status=status
+        json.dumps(payload),
+        mimetype="application/json",
+        headers=headers,
+        status=status,
     )
 
     return response
@@ -59,7 +63,7 @@ def env():
     key = request.args.get("key")
     if key is None or key != SHOW_ENV_KEY:
         return send_response(
-            payload=error.not_authorized(),
+            payload=message.not_authorized(),
             status=403,
         )
 
@@ -74,7 +78,7 @@ def health():
 
 @app.route("/flush")
 def flush():
-    return send_response({"flush": cache.flush()})
+    return send_response({**message.ok(), "flush": cache.flush()})
 
 
 # Show law(s).
@@ -85,7 +89,7 @@ def main(number: int = 1):
 
     if number is False:
         return send_response(
-            payload=error.not_found(),
+            payload=message.not_found(),
             status=404,
         )
 
@@ -105,7 +109,7 @@ def main(number: int = 1):
 @app.errorhandler(404)
 def page_not_found(e):
     return send_response(
-        payload=error.not_found(),
+        payload=message.not_found(),
         status=404,
     )
 

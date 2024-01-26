@@ -1,8 +1,7 @@
 class Message:
-    code = 200
-    status = "success"
-
     def success(self):
+        self.code = 200
+        self.status = "success"
         return self.__error_message()
 
     def not_found(self):

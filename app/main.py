@@ -66,7 +66,7 @@ def env():
     if key is None or key != SHOW_ENV_KEY:
         return send_response(
             payload=message.not_authorized(),
-            status=message.not_authorized().code,
+            status=message.not_authorized()["code"],
         )
 
     return environment_dump.run()
@@ -92,7 +92,7 @@ def random_select(number: int = 1):
     if number is False:
         return send_response(
             payload=message.not_found(),
-            status=message.not_found().code,
+            status=message.not_found()["code"],
         )
 
     laws = random.sample(data, number)
@@ -112,7 +112,7 @@ def random_select(number: int = 1):
 def page_not_found(e):
     return send_response(
         payload=message.not_found(),
-        status=message.not_found().code,
+        status=message.not_found()["code"],
     )
 
 

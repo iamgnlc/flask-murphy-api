@@ -2,6 +2,7 @@ import json
 import random
 import signal
 import sys
+import os
 
 from camel_converter import dict_to_camel
 from colorama import Fore, Style
@@ -9,13 +10,14 @@ from flask import Flask, Response, request
 from healthcheck import HealthCheck, EnvironmentDump
 from threading import Thread
 
-from app import AUTHOR, MAX_LAWS, SHOW_ENV_KEY
+from app import AUTHOR, MAX_LAWS, SHOW_ENV_KEY, ENV
 from app.utils import load_data, print_logo, validate
 from app.utils import Cache, Message
 
 app = Flask(__name__)
 
-print_logo()
+if ENV == "development":
+    print_logo()
 
 data = load_data()
 
@@ -64,7 +66,7 @@ def env():
     if key is None or key != SHOW_ENV_KEY:
         return send_response(
             payload=message.not_authorized(),
-            status=403,
+            status=message.not_authorized().code,
         )
 
     return environment_dump.run()
@@ -84,13 +86,13 @@ def flush():
 # Show law(s).
 @app.route("/")
 @app.route("/<number>")
-def main(number: int = 1):
+def random_select(number: int = 1):
     number = validate(number, 1, MAX_LAWS)
 
     if number is False:
         return send_response(
             payload=message.not_found(),
-            status=404,
+            status=message.not_found().code,
         )
 
     laws = random.sample(data, number)
@@ -110,7 +112,7 @@ def main(number: int = 1):
 def page_not_found(e):
     return send_response(
         payload=message.not_found(),
-        status=404,
+        status=message.not_found().code,
     )
 
 

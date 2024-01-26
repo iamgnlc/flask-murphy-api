@@ -13,5 +13,6 @@ CACHE_PASSWORD = os.getenv("CACHE_PASSWORD")
 CACHE_PORT = os.getenv("CACHE_PORT")
 CACHE_TTL = os.getenv("CACHE_TTL")
 CACHE_ENABLED = os.getenv("CACHE_ENABLED")
+ENV = os.getenv("VERCEL_ENV")
 
 MAX_LAWS = 50

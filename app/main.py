@@ -24,6 +24,10 @@ data = load_data()
 default_headers = {
     "X-Author": AUTHOR,
     "X-Robots-Tag": "noindex",
+    "Access-Control-Allow-Credentials": "true",
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Methods": "GET,OPTIONS,PATCH,DELETE,POST,PUT",
+    "Access-Control-Allow-Headers": "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version",
 }
 
 environment_dump = EnvironmentDump()
@@ -86,7 +90,7 @@ def flush():
 # Show law(s).
 @app.route("/")
 @app.route("/<number>")
-def random_select(number: int = 1):
+def main(number: int = 1):
     number = validate(number, 1, MAX_LAWS)
 
     if number is False:

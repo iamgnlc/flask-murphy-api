@@ -2,7 +2,6 @@ import json
 import random
 import signal
 import sys
-import os
 
 from camel_converter import dict_to_camel
 from colorama import Fore, Style

@@ -10,7 +10,7 @@ from healthcheck import HealthCheck, EnvironmentDump
 from threading import Thread
 
 from app import AUTHOR, MAX_LAWS, SHOW_ENV_KEY, ENV
-from app.utils import load_data, print_logo, validate
+from app.utils import load_data, print_logo, validate, default_headers
 from app.utils import Cache, Message
 
 app = Flask(__name__)
@@ -19,15 +19,6 @@ if ENV == "development":
     print_logo()
 
 data = load_data()
-
-default_headers = {
-    "X-Author": AUTHOR,
-    "X-Robots-Tag": "noindex",
-    "Access-Control-Allow-Credentials": "true",
-    "Access-Control-Allow-Origin": "*",
-    "Access-Control-Allow-Methods": "GET,OPTIONS,PATCH,DELETE,POST,PUT",
-    "Access-Control-Allow-Headers": "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version",
-}
 
 environment_dump = EnvironmentDump()
 health_check = HealthCheck()
@@ -44,14 +35,14 @@ def show_laws(laws):
         "X-Count": meta_data["return_count"],
         "X-Total-Count": meta_data["total_count"],
     }
-    headers = {**default_headers, **custom_headers}
+    headers = {**default_headers(), **custom_headers}
 
     payload = {**message.success(), **dict_to_camel(meta_data), "data": laws}
 
     return send_response(payload=payload, headers=headers)
 
 
-def send_response(payload, status: int = 200, headers=default_headers):
+def send_response(payload, status: int = 200, headers=default_headers()):
     response = Response(
         json.dumps(payload),
         mimetype="application/json",

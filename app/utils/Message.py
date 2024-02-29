@@ -1,14 +1,17 @@
 class Message:
+    @property
     def success(self):
         self.code = 200
         self.status = "success"
         return self.__send_message()
 
+    @property
     def not_found(self):
         self.code = 404
         self.status = "not found"
         return self.__send_message()
 
+    @property
     def not_authorized(self):
         self.code = 403
         self.status = "not authorized"

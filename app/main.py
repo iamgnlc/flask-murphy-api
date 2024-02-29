@@ -46,7 +46,7 @@ def show_laws(laws):
     }
     headers = {**default_headers, **custom_headers}
 
-    payload = {**message.success(), **dict_to_camel(meta_data), "data": laws}
+    payload = {**message.success, **dict_to_camel(meta_data), "data": laws}
 
     return send_response(payload=payload, headers=headers)
 
@@ -68,8 +68,8 @@ def env():
     key = request.args.get("key")
     if key is None or key != SHOW_ENV_KEY:
         return send_response(
-            payload=message.not_authorized(),
-            status=message.not_authorized()["code"],
+            payload=message.not_authorized,
+            status=message.not_authorized["code"],
         )
 
     return environment_dump.run()
@@ -83,7 +83,7 @@ def health():
 
 @app.route("/flush")
 def flush():
-    return send_response({**message.success(), "flush": cache.flush()})
+    return send_response({**message.success, "flush": cache.flush()})
 
 
 # Show law(s).
@@ -94,8 +94,8 @@ def main(number: int = 1):
 
     if number is False:
         return send_response(
-            payload=message.not_found(),
-            status=message.not_found()["code"],
+            payload=message.not_found,
+            status=message.not_found["code"],
         )
 
     laws = random.sample(data, number)
@@ -114,8 +114,8 @@ def main(number: int = 1):
 @app.errorhandler(404)
 def page_not_found(e):
     return send_response(
-        payload=message.not_found(),
-        status=message.not_found()["code"],
+        payload=message.not_found,
+        status=message.not_found["code"],
     )
 
 

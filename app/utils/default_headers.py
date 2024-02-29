@@ -20,6 +20,7 @@ def default_headers():
     return {
         "X-Author": AUTHOR,
         "X-Robots-Tag": "noindex",
+        # CORS.
         "Access-Control-Allow-Credentials": "true",
         "Access-Control-Allow-Origin": "*",
         "Access-Control-Allow-Methods": ",".join(map(str, methods)),

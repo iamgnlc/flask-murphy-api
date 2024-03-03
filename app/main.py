@@ -74,7 +74,7 @@ def health():
 
 @app.route("/flush")
 def flush():
-    return send_response({**message.success, "flush": cache.flush()})
+    return send_response({**message.success, "flush": cache.flush})
 
 
 # Show law(s).
@@ -92,7 +92,7 @@ def main(number: int = 1):
     laws = random.sample(data, number)
 
     # Push to cache if enabled and working.
-    if cache.is_enabled() and cache.ping():
+    if cache.is_enabled and cache.ping:
         Thread(
             target=cache.update,
             args=(laws,),

@@ -17,15 +17,21 @@ class Cache:
             password=CACHE_PASSWORD,
         )
 
+    @property
     def is_enabled(self):
         return bool(int(CACHE_ENABLED))
 
+    @property
     def ping(self):
         try:
-            self.cache.ping()
+            self.cache.ping
             return True
         except Exception:
             return False
+
+    @property
+    def flush(self):
+        return self.cache.flushall()
 
     def update(self, laws, ttl: int = CACHE_TTL):
         for law in laws:
@@ -34,9 +40,6 @@ class Cache:
                 self.cache.set(key, json.dumps(law), ex=ttl)
             except redis.ConnectionError:
                 continue
-
-    def flush(self):
-        return self.cache.flushall()
 
     def _get_key(self):
         key = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S.%f")

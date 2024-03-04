@@ -5,3 +5,4 @@ def test_default_headers():
     # it should return a dict.
     data = default_headers()
     assert isinstance(data, dict)
+    assert "X-Author" in data

@@ -1,9 +1,9 @@
 from app import AUTHOR
 
 
-methods = ["GET", "OPTIONS", "PATCH", "DELETE", "POST", "PUT"]
+allowed_methods = ["GET", "OPTIONS", "PATCH", "DELETE", "POST", "PUT"]
 
-allow_headers = [
+allowed_headers = [
     "X-CSRF-Token",
     "X-Requested-With",
     "Accept",
@@ -23,6 +23,6 @@ def default_headers():
         # CORS.
         "Access-Control-Allow-Credentials": "true",
         "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": ",".join(map(str, methods)),
-        "Access-Control-Allow-Headers": ",".join(map(str, allow_headers)),
+        "Access-Control-Allow-Methods": ",".join(map(str, allowed_methods)),
+        "Access-Control-Allow-Headers": ",".join(map(str, allowed_headers)),
     }

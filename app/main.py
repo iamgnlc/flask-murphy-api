@@ -58,10 +58,7 @@ def send_response(payload, status: int = 200, headers=default_headers()):
 def env():
     key = request.args.get("key")
     if key is None or key != SHOW_ENV_KEY:
-        return send_response(
-            payload=message.not_authorized,
-            status=message.not_authorized["code"],
-        )
+        return not_authorized(None)
 
     return environment_dump.run()
 
@@ -84,10 +81,7 @@ def main(number: int = 1):
     number = validate(number, 1, MAX_LAWS)
 
     if number is False:
-        return send_response(
-            payload=message.not_found,
-            status=message.not_found["code"],
-        )
+        return page_not_found(None)
 
     laws = random.sample(data, number)
 
@@ -107,6 +101,14 @@ def page_not_found(e):
     return send_response(
         payload=message.not_found,
         status=message.not_found["code"],
+    )
+
+
+@app.errorhandler(403)
+def not_authorized(e):
+    return send_response(
+        payload=message.not_authorized,
+        status=message.not_authorized["code"],
     )
 
 

@@ -35,13 +35,13 @@ class Cache:
 
     def update(self, laws, ttl: int = CACHE_TTL):
         for law in laws:
-            key = self._get_key()
+            key = self.__get_key()
             try:
                 self.cache.set(key, json.dumps(law), ex=ttl)
             except redis.ConnectionError:
                 continue
 
-    def _get_key(self):
+    def __get_key(self):
         key = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S.%f")
         salt = "".join(random.choices(string.ascii_uppercase, k=6))
         return str(re.sub("[^0-9]", "", key)) + salt

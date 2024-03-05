@@ -56,8 +56,10 @@ def send_response(payload, status: int = 200, headers=default_headers()):
 # Show env vars only if authorized.
 @app.route("/env")
 def env():
+    invalid_key = lambda key: key is None or key != SHOW_ENV_KEY or SHOW_ENV_KEY == ""
+
     key = request.args.get("key")
-    if key is None or key != SHOW_ENV_KEY:
+    if invalid_key(key):
         return not_authorized(None)
 
     return environment_dump.run()

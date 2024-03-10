@@ -17,5 +17,11 @@ class Message:
         self.status = "not authorized"
         return self.__send_message()
 
+    @property
+    def too_many_requests(self):
+        self.code = 429
+        self.status = "too many requests"
+        return self.__send_message()
+
     def __send_message(self):
         return {"code": self.code, "status": self.status}

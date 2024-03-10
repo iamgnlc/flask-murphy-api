@@ -6,14 +6,18 @@ import sys
 from camel_converter import dict_to_camel
 from colorama import Fore, Style
 from flask import Flask, Response, request
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 from healthcheck import HealthCheck, EnvironmentDump
 from threading import Thread
 
-from app import AUTHOR, MAX_LAWS, SHOW_ENV_KEY, ENV
+from app import MAX_LAWS, SHOW_ENV_KEY, ENV
 from app.utils import load_data, print_logo, validate, default_headers
 from app.utils import Cache, Message
 
 app = Flask(__name__)
+if ENV == "production":
+    app.config["DEBUG"] = False
 
 if ENV == "development":
     print_logo()
@@ -24,6 +28,13 @@ environment_dump = EnvironmentDump()
 health_check = HealthCheck()
 message = Message()
 cache = Cache()
+
+limiter = Limiter(
+    app=app,
+    key_func=get_remote_address,
+    default_limits=["50000 per day", "60 per minute"],
+    storage_uri="memory://",
+)
 
 
 def show_laws(laws):
@@ -56,7 +67,8 @@ def send_response(payload, status: int = 200, headers=default_headers()):
 # Show env vars only if authorized.
 @app.route("/env")
 def env():
-    invalid_key = lambda key: key is None or key != SHOW_ENV_KEY or SHOW_ENV_KEY == ""
+    def invalid_key(key):
+        return key is None or key != SHOW_ENV_KEY or SHOW_ENV_KEY == ""
 
     key = request.args.get("key")
     if invalid_key(key):
@@ -111,6 +123,14 @@ def not_authorized(e):
     return send_response(
         payload=message.not_authorized,
         status=message.not_authorized["code"],
+    )
+
+
+@app.errorhandler(429)
+def too_many_requests(e):
+    return send_response(
+        payload=message.too_many_requests,
+        status=message.too_many_requests["code"],
     )
 
 

@@ -19,3 +19,9 @@ def test_not_authorized():
     # it should return 403.
     response = message.not_authorized
     assert response["code"] == 403
+
+
+def test_too_many_requests():
+    # it should return 403.
+    response = message.too_many_requests
+    assert response["code"] == 429

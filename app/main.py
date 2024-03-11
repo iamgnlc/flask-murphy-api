@@ -6,13 +6,11 @@ import sys
 from camel_converter import dict_to_camel
 from colorama import Fore, Style
 from flask import Flask, Response, request
-from flask_limiter import Limiter
-from flask_limiter.util import get_remote_address
 from healthcheck import HealthCheck, EnvironmentDump
 from threading import Thread
 
 from app import MAX_LAWS, SHOW_ENV_KEY, ENV
-from app.utils import load_data, print_logo, validate, default_headers
+from app.utils import load_data, print_logo, validate, default_headers, rate_limiter
 from app.utils import Cache, Message
 
 app = Flask(__name__)
@@ -29,12 +27,7 @@ health_check = HealthCheck()
 message = Message()
 cache = Cache()
 
-limiter = Limiter(
-    app=app,
-    key_func=get_remote_address,
-    default_limits=["50000 per day", "60 per minute"],
-    storage_uri="memory://",
-)
+limiter = rate_limiter(app)
 
 
 def show_laws(laws):
@@ -109,7 +102,6 @@ def main(number: int = 1):
     return show_laws(laws)
 
 
-# Catch 404.
 @app.errorhandler(404)
 def page_not_found(e):
     return send_response(

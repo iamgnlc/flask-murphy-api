@@ -5,7 +5,7 @@ import sys
 
 from camel_converter import dict_to_camel
 from colorama import Fore, Style
-from flask import Flask, Response, request
+from flask import Flask, Response, request, abort
 from healthcheck import HealthCheck, EnvironmentDump
 from threading import Thread
 
@@ -21,13 +21,12 @@ if ENV == "development":
     print_logo()
 
 data = load_data()
+limiter = rate_limiter(app)
 
 environment_dump = EnvironmentDump()
 health_check = HealthCheck()
 message = Message()
 cache = Cache()
-
-limiter = rate_limiter(app)
 
 
 def show_laws(laws):
@@ -65,7 +64,7 @@ def env():
 
     key = request.args.get("key")
     if invalid_key(key):
-        return not_authorized(None)
+        abort(403)
 
     return environment_dump.run()
 
@@ -88,11 +87,11 @@ def main(number: int = 1):
     number = validate(number, 1, MAX_LAWS)
 
     if number is False:
-        return page_not_found(None)
+        abort(404)
 
     laws = random.sample(data, number)
 
-    # Push to cache if enabled and working.
+    # Push to cache if enabled and responding.
     if cache.is_enabled and cache.ping:
         Thread(
             target=cache.update,

@@ -22,5 +22,8 @@ lint:
 start:
 		python server.py
 
+pm2:
+		pm2 ${COMMAND} ecosystem.config.js
+
 test:
 		pytest --verbosity=1 --cov

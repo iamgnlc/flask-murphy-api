@@ -22,8 +22,12 @@ lint:
 start:
 		python server.py
 
-pm2:
-		pm2 ${COMMAND} ecosystem.config.js
+pm2_start:
+		pm2 start ecosystem.config.js
+
+pm2_stop:
+		pm2 stop ecosystem.config.js
+		pm2 delete all 
 
 test:
 		pytest --verbosity=1 --cov

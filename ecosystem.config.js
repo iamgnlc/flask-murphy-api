@@ -3,7 +3,9 @@ module.exports = {
     {
       name: "flask-murphy-api",
       script: "./server.py",
-      instances: "MAX",
+      interpreter: "python3",
+      wait_ready: true,
+      instances: 1,
     },
   ],
 };

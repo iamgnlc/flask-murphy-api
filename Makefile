@@ -19,15 +19,15 @@ install:
 lint:
 		ruff .
 
-start:
-		python server.py
-
 pm2_start:
 		pm2 start ecosystem.config.js
 
 pm2_stop:
 		pm2 stop ecosystem.config.js
-		pm2 delete all 
+		pm2 delete flask-murphy-api 
+
+start:
+		python server.py
 
 test:
 		pytest --verbosity=1 --cov

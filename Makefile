@@ -17,14 +17,7 @@ install:
 		pip install -r requirements.txt
 
 lint:
-		ruff .
-
-pm2_start:
-		pm2 start ecosystem.config.js
-
-pm2_stop:
-		pm2 stop ecosystem.config.js
-		pm2 delete flask-murphy-api 
+		ruff check .
 
 start:
 		python server.py

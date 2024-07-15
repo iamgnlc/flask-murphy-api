@@ -1600,11 +1600,11 @@
   },
   {
     "title": "Professor Gordon's Rule of Evolving Bryophytic Systems",
-    "law": "While bryophytic plants are typically encountered in substrata of earthy or mineral matter in concreted state, discrete substrata elements occasionally display a roughly spherical configuration which, in presence of suitable gravitational and other effects, lends itself to combined translatory and rotational motion. One notices in such cases an absence of the otherwise typical accretion of bryophyta. We conclude therefore that a rolling stone gathers no moss."
-  },
-  {
-    "title": "Corollary (Rutgers)",
-    "law": "Generally the subjective value assignable to avian lifeforms, when encountered and considered within the confines of certain orders of woody plants lacking true meristematic dominance, as compared to a possible valuation of these same lifeforms when in the grasp of — and subject to control by — the manipulative bone/muscle/nerve complex typically terminating the forelimb of a member of the species homo sapiens (and possibly direct precursors thereof) is approximately five times ten to th minus first power."
+    "law": "While bryophytic plants are typically encountered in substrata of earthy or mineral matter in concreted state, discrete substrata elements occasionally display a roughly spherical configuration which, in presence of suitable gravitational and other effects, lends itself to combined translatory and rotational motion. One notices in such cases an absence of the otherwise typical accretion of bryophyta. We conclude therefore that a rolling stone gathers no moss.",
+    "corollary": {
+      "title": "Corollary (Rutgers)",
+      "law": "Generally the subjective value assignable to avian lifeforms, when encountered and considered within the confines of certain orders of woody plants lacking true meristematic dominance, as compared to a possible valuation of these same lifeforms when in the grasp of — and subject to control by — the manipulative bone/muscle/nerve complex typically terminating the forelimb of a member of the species homo sapiens (and possibly direct precursors thereof) is approximately five times ten to th minus first power."
+    }
   },
   {
     "title": "Goulden's Law of Jury Watching",
@@ -1791,11 +1791,11 @@
   },
   {
     "title": "Heller's Myths of Management",
-    "law": "The first myth of management is that it exists. The second myth of management is that success equals skill."
-  },
-  {
-    "title": "Corollary (Johnson)",
-    "law": "Nobody really knows what is going on anywhere within your organization."
+    "law": "The first myth of management is that it exists. The second myth of management is that success equals skill.",
+    "corollary": {
+      "title": "Corollary (Johnson)",
+      "law": "Nobody really knows what is going on anywhere within your organization."
+    }
   },
   {
     "title": "Hellrung's Law",
@@ -3512,11 +3512,11 @@
   },
   {
     "title": "Rodriguez's Observation",
-    "law": "A consultant is someone who, when hired to find out what time it is, borrows your watch to find out."
-  },
-  {
-    "title": "Corollary (Martin)",
-    "law": "If you hire a consultant to read your own watch to you, you got your money's worth."
+    "law": "A consultant is someone who, when hired to find out what time it is, borrows your watch to find out.",
+    "corollary": {
+      "title": "Corollary (Martin)",
+      "law": "If you hire a consultant to read your own watch to you, you got your money's worth."
+    }
   },
   {
     "title": "Roemer's Law",
@@ -3649,11 +3649,11 @@
   },
   {
     "title": "Law of Selective Gravity (the Buttered Side Down Law)",
-    "law": "An object will fall so as to do the most damage."
-  },
-  {
-    "title": "Corollary (Klipstein)",
-    "law": "The most delicate component will be the one to drop."
+    "law": "An object will fall so as to do the most damage.",
+    "corollary": {
+      "title": "Corollary (Klipstein)",
+      "law": "The most delicate component will be the one to drop."
+    }
   },
   {
     "title": "Sells's Law",
@@ -4127,15 +4127,17 @@
   },
   {
     "title": "Weaver's Law",
-    "law": "When several reporters share a cab on an assignment, the reporter in the front seat pays for all."
-  },
-  {
-    "title": "Corollary (O'Doyle)",
-    "law": "No matter how many reporters share a cab, and no matter who pays, each puts the full fare on his own expense account."
-  },
-  {
-    "title": "Corollary (Germond)",
-    "law": "When a group of newsmen go out to dinner together, the bill is to be divided evenly among them, regardless of what eac one eats and drinks."
+    "law": "When several reporters share a cab on an assignment, the reporter in the front seat pays for all.",
+    "corollaries": [
+      {
+        "title": "Corollary (O'Doyle)",
+        "law": "No matter how many reporters share a cab, and no matter who pays, each puts the full fare on his own expense account."
+      },
+      {
+        "title": "Corollary (Germond)",
+        "law": "When a group of newsmen go out to dinner together, the bill is to be divided evenly among them, regardless of what each one eats and drinks."
+      }
+    ]
   },
   {
     "title": "Weber-Fechner Law",

@@ -2191,8 +2191,7 @@
     "law": "In specifications, Murphy's Law supersedes Ohm's."
   },
   {
-    "title": "Klipstein's Laws",
-    "law": "Applied to General Engineering",
+    "title": "Klipstein's Laws (Applied to General Engineering)",
     "laws": [
       "A patent application will be preceded by one week by a similar application made by an independent worker.",
       "Firmness of delivery dates is inversely proportional to the tightness of the schedule.",
@@ -2201,7 +2200,7 @@
     ]
   },
   {
-    "title": "Applied to Prototyping and Production",
+    "title": "Klipstein's Laws (Applied to Prototyping and Production)",
     "laws": [
       "Tolerances will accumulate unidirectionally toward maximum difficulty to assemble.",
       "If a project requires n components, there will be n-1 units in stock.",

@@ -6,6 +6,6 @@ def rate_limiter(app):
     return Limiter(
         app=app,
         key_func=get_remote_address,
-        default_limits=["50000 per day", "60 per minute"],
+        default_limits=["50000 per day", "90 per minute"],
         storage_uri="memory://",
     )

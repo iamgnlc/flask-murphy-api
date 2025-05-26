@@ -34,12 +34,18 @@ class Cache:
         return self.cache.flushall()
 
     def update(self, laws, ttl: int = CACHE_TTL):
+        if not laws:
+            return
+
+        pipe = self.cache.pipeline()
         for law in laws:
             key = self.__get_key()
-            try:
-                self.cache.set(key, json.dumps(law), ex=ttl)
-            except redis.ConnectionError:
-                continue
+            pipe.set(key, json.dumps(law), ex=ttl)
+
+        try:
+            pipe.execute()
+        except redis.ConnectionError:
+            pass
 
     def __get_key(self):
         key = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S.%f")

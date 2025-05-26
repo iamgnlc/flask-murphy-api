@@ -34,12 +34,23 @@ class Cache:
         return self.cache.flushall()
 
     def update(self, laws, ttl: int = CACHE_TTL):
+        if not laws:
+            return
+
+        pipe = self.cache.pipeline()
         for law in laws:
             key = self.__get_key()
-            try:
-                self.cache.set(key, json.dumps(law), ex=ttl)
-            except redis.ConnectionError:
-                continue
+            # The original code would continue on a connection error for a single item.
+            # With a pipeline, if execute() fails, the whole batch fails.
+            # We'll add the set command to the pipe. The try-except will be around execute().
+            pipe.set(key, json.dumps(law), ex=ttl)
+
+        try:
+            pipe.execute()
+        except redis.ConnectionError:
+            # If the batch operation fails, silently pass, similar to the
+            # original behavior of continuing past a single failed set.
+            pass
 
     def __get_key(self):
         key = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S.%f")

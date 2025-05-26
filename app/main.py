@@ -7,13 +7,17 @@ from camel_converter import dict_to_camel
 from colorama import Fore, Style
 from flask import Flask, Response, request, abort
 from healthcheck import HealthCheck, EnvironmentDump
-from threading import Thread
+# from threading import Thread # Line removed
+from concurrent.futures import ThreadPoolExecutor # Added
+import atexit # Added
 
 from app import MAX_LAWS, SHOW_ENV_KEY, ENV
 from app.utils import load_data, print_logo, validate, default_headers, rate_limiter
 from app.utils import Cache, Message
 
 app = Flask(__name__)
+cache_executor = ThreadPoolExecutor(max_workers=5) # Added
+atexit.register(lambda: cache_executor.shutdown(wait=True)) # Added
 if ENV == "production":
     app.config["DEBUG"] = False
 
@@ -93,10 +97,7 @@ def main(number: int = 1):
 
     # Push to cache if enabled and responding.
     if cache.is_enabled and cache.ping:
-        Thread(
-            target=cache.update,
-            args=(laws,),
-        ).start()
+        cache_executor.submit(cache.update, laws) # Changed
 
     return show_laws(laws)
 

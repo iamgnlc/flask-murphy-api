@@ -16,3 +16,12 @@ CACHE_ENABLED = os.getenv("CACHE_ENABLED")
 ENV = os.getenv("VERCEL_ENV")
 
 MAX_LAWS = 50
+
+SAFE_ENV_VARS = [
+    "AUTHOR",
+    "CACHE_ENABLED",
+    "CACHE_HOST",
+    "CACHE_PORT",
+    "CACHE_TTL",
+    "VERCEL_ENV",
+]

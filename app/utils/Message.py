@@ -1,27 +1,20 @@
 class Message:
     @property
     def success(self):
-        self.code = 200
-        self.status = "success"
-        return self.__send_message()
+        return {"code": 200, "status": "success"}
 
     @property
     def not_found(self):
-        self.code = 404
-        self.status = "not found"
-        return self.__send_message()
+        return {"code": 404, "status": "not found"}
 
     @property
     def not_authorized(self):
-        self.code = 403
-        self.status = "not authorized"
-        return self.__send_message()
+        return {"code": 403, "status": "not authorized"}
 
     @property
     def too_many_requests(self):
-        self.code = 429
-        self.status = "too many requests"
-        return self.__send_message()
+        return {"code": 429, "status": "too many requests"}
 
-    def __send_message(self):
-        return {"code": self.code, "status": self.status}
+    @property
+    def bad_request(self):
+        return {"code": 400, "status": "bad request"}

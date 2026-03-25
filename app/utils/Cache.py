@@ -1,12 +1,14 @@
+import hashlib
 import json
-import random
-import re
+import logging
+import time
 import redis
-import string
-
-from datetime import datetime
 
 from app import CACHE_HOST, CACHE_PASSWORD, CACHE_PORT, CACHE_TTL, CACHE_ENABLED
+
+logger = logging.getLogger(__name__)
+
+PING_TTL = 5  # seconds between Redis ping checks
 
 
 class Cache:
@@ -16,18 +18,26 @@ class Cache:
             port=CACHE_PORT,
             password=CACHE_PASSWORD,
         )
+        self._ping_result = False
+        self._ping_checked_at = 0
 
     @property
     def is_enabled(self):
-        return bool(int(CACHE_ENABLED))
+        return bool(int(CACHE_ENABLED or 0))
 
     @property
     def ping(self):
+        now = time.monotonic()
+        if now - self._ping_checked_at < PING_TTL:
+            return self._ping_result
         try:
-            self.cache.ping
-            return True
-        except Exception:
-            return False
+            self.cache.ping()
+            self._ping_result = True
+        except Exception as e:
+            logger.error("Redis ping failed: %s", e)
+            self._ping_result = False
+        self._ping_checked_at = now
+        return self._ping_result
 
     @property
     def flush(self):
@@ -39,15 +49,11 @@ class Cache:
 
         pipe = self.cache.pipeline()
         for law in laws:
-            key = self.__get_key()
-            pipe.set(key, json.dumps(law), ex=ttl)
+            serialized = json.dumps(law, sort_keys=True)
+            key = "murphy:" + hashlib.md5(serialized.encode()).hexdigest()
+            pipe.set(key, serialized, ex=ttl)
 
         try:
             pipe.execute()
-        except redis.ConnectionError:
-            pass
-
-    def __get_key(self):
-        key = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S.%f")
-        salt = "".join(random.choices(string.ascii_uppercase, k=6))
-        return str(re.sub("[^0-9]", "", key)) + salt
+        except redis.ConnectionError as e:
+            logger.error("Redis pipeline failed: %s", e)

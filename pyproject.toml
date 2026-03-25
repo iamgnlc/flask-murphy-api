@@ -1,4 +1,39 @@
+[project]
+name = "flask-murphy-api"
+version = "1.0.0"
+requires-python = ">=3.11"
+dependencies = [
+    "blinker==1.8.2",
+    "camel-converter==3.1.2",
+    "click==8.1.7",
+    "colorama==0.4.6",
+    "flask-limiter==3.7.0",
+    "Flask==3.0.3",
+    "itsdangerous==2.2.0",
+    "Jinja2==3.1.4",
+    "MarkupSafe==2.1.5",
+    "packaging==24.1",
+    "py-healthcheck==1.10.1",
+    "python-dotenv==1.0.1",
+    "redis==5.0.7",
+    "six==1.16.0",
+    "waitress==3.0.0",
+    "Werkzeug==3.0.3",
+]
+
+[project.optional-dependencies]
+dev = [
+    "coverage==7.5.4",
+    "iniconfig==2.0.0",
+    "pluggy==1.5.0",
+    "pytest-cov==5.0.0",
+    "pytest==8.2.2",
+]
+
 [tool.black]
 
 [tool.ruff]
 ignore-init-module-imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

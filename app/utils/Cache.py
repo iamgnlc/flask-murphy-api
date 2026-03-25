@@ -23,7 +23,7 @@ class Cache:
 
     @property
     def is_enabled(self):
-        return bool(int(CACHE_ENABLED))
+        return bool(int(CACHE_ENABLED or 0))
 
     @property
     def ping(self):

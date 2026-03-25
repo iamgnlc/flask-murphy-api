@@ -81,7 +81,7 @@ def test_get_nonexistent_route_returns_404(client):
 
 
 def test_rate_limit_returns_429(client):
-    with patch("app.main.limiter") as mock_limiter:
+    with patch("app.main.limiter"):
         # Trigger 429 directly via the error handler
         with app.test_request_context():
             from app.main import too_many_requests

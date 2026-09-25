@@ -2,9 +2,10 @@ import hashlib
 import json
 import logging
 import time
+
 import redis
 
-from app import CACHE_HOST, CACHE_PASSWORD, CACHE_PORT, CACHE_TTL, CACHE_ENABLED
+from app import CACHE_ENABLED, CACHE_HOST, CACHE_PASSWORD, CACHE_PORT, CACHE_TTL
 
 logger = logging.getLogger(__name__)
 
@@ -33,7 +34,7 @@ class Cache:
         try:
             self.cache.ping()
             self._ping_result = True
-        except Exception as e:
+        except redis.RedisError as e:
             logger.error("Redis ping failed: %s", e)
             self._ping_result = False
         self._ping_checked_at = now

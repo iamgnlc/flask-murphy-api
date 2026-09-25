@@ -24,18 +24,18 @@ domain is "sample N items from an immutable in-memory list and serialize them."
 
 ## Module Map
 
-| Module | Responsibility | Key facts |
-|---|---|---|
-| `app/__init__.py` | Config constants | Reads all env vars once via dotenv; exports `MAX_LAWS=50`, `SAFE_ENV_VARS`, `__version__`; `ENV` falls back to `"development"` when `VERCEL_ENV` is unset. Everything else imports config from here. |
-| `app/main.py` | The app itself | All 4 routes, all error handlers, response assembly. Vercel serverless entry point. |
-| `app/utils/load_data.py` | Dataset loading | Resolves `db/data.json` relative to its own file (3 levels up), returns an immutable `tuple`. |
-| `app/utils/validate.py` | Input coercion | `int()` conversion; `False` on `ValueError`; clamps into `[min, max]` instead of rejecting. |
-| `app/utils/Cache.py` | Redis integration | Lazy-connecting `redis.Redis`; memoized ping; pipeline writes; content-addressed keys. |
-| `app/utils/Message.py` | Response envelopes | Single source of truth for `{code, status}` payloads. |
-| `app/utils/default_headers.py` | Common headers | `X-Author`, `X-Robots-Tag: noindex`, permissive CORS. |
-| `app/utils/rate_limiter.py` | Rate limiting | flask-limiter, keyed by remote address, **in-memory** storage. |
-| `app/utils/print_logo.py` | Dev cosmetics | ASCII logo when `ENV == "development"`. |
-| `server.py` | Waitress host | Hardcoded `127.0.0.1:8080`, optional port via `sys.argv[1]`. Not used on Vercel. |
+| Module                         | Responsibility     | Key facts                                                                                                                                                                                            |
+| ------------------------------ | ------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `app/__init__.py`              | Config constants   | Reads all env vars once via dotenv; exports `MAX_LAWS=50`, `SAFE_ENV_VARS`, `__version__`; `ENV` falls back to `"development"` when `VERCEL_ENV` is unset. Everything else imports config from here. |
+| `app/main.py`                  | The app itself     | All 4 routes, all error handlers, response assembly. Vercel serverless entry point.                                                                                                                  |
+| `app/utils/load_data.py`       | Dataset loading    | Resolves `db/data.json` relative to its own file (3 levels up), returns an immutable `tuple`.                                                                                                        |
+| `app/utils/validate.py`        | Input coercion     | `int()` conversion; `False` on `ValueError`; clamps into `[min, max]` instead of rejecting.                                                                                                          |
+| `app/utils/cache.py`           | Redis integration  | Lazy-connecting `redis.Redis`; memoized ping; pipeline writes; content-addressed keys.                                                                                                               |
+| `app/utils/message.py`         | Response envelopes | Single source of truth for `{code, status}` payloads.                                                                                                                                                |
+| `app/utils/default_headers.py` | Common headers     | `X-Author`, `X-Robots-Tag: noindex`, permissive CORS.                                                                                                                                                |
+| `app/utils/rate_limiter.py`    | Rate limiting      | flask-limiter, keyed by remote address, **in-memory** storage.                                                                                                                                       |
+| `app/utils/print_logo.py`      | Dev cosmetics      | ASCII logo when `ENV == "development"`.                                                                                                                                                              |
+| `server.py`                    | Waitress host      | Hardcoded `127.0.0.1:8080`, optional port via `sys.argv[1]`. Not used on Vercel.                                                                                                                     |
 
 ## Request Lifecycle: `GET /<number>`
 
@@ -52,12 +52,14 @@ envelope by module-level `@app.errorhandler` handlers using the `Message` class.
 ## Design Decisions
 
 ### Cache: content-addressed, best-effort, non-blocking
+
 - **Why async writes?** The cache is an optimization, not a source of truth. A slow/down Redis must never slow down or fail a quote request.
 - **Why `murphy:<md5(sorted JSON)>`?** Keys are deterministic per law, so repeated caching of the same law deduplicates instead of accumulating garbage; there is no lookup path in the API today (the cache is write-oriented, presumably for analytics/consumers), which is why `/flush` exists as the only cache-management endpoint.
 - **Why the 5-second memoized ping?** Redis availability is checked on every law request; without memoization that would add a round-trip per request. Failures are logged and retried after `PING_TTL = 5` seconds.
 - **Pipeline writes** batch all laws of a request into one round-trip, each with expiry `ex=CACHE_TTL`.
 
 ### Rate limiting: in-memory by design
+
 `storage_uri="memory://"` keeps the app dependency-free and serverless-friendly.
 Consequences: limits are per-process/per-instance (not global), and they reset
 on deploy or restart. If strict global limits are ever needed, swap the storage
@@ -65,11 +67,13 @@ URI to a shared Redis — the `Limiter` construction is isolated in
 `rate_limiter.py` precisely to make that a one-line change.
 
 ### Immutable data, loaded once
+
 `load_data()` returns a `tuple` and runs at import time. The dataset is
 effectively a build-time constant; hot-reloading it is out of scope. On Vercel
 the JSON is bundled with the function.
 
 ### Single-file app, thin utilities
+
 All routing/wiring lives in `app/main.py`; utilities are importable, pure-ish
 functions/classes with no Flask dependencies (except `rate_limiter`). This
 keeps the unit tests in `tests/utils/` free of app context.

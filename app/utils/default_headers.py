@@ -1,6 +1,5 @@
 from app import AUTHOR
 
-
 allowed_methods = ["GET", "OPTIONS", "PATCH", "DELETE", "POST", "PUT"]
 
 allowed_headers = [

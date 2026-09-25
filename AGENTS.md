@@ -20,17 +20,18 @@ colorama, py-healthcheck, python-dotenv. Tests: pytest + pytest-cov. Tooling: ru
 
 | Task | Command | Notes |
 |---|---|---|
-| Install deps | `make install` | `pip install -r requirements.txt` |
+| Install deps | `make install` | `pip install -r requirements-dev.txt` (runtime + dev tools) |
 | Run dev server | `make dev` | Flask dev server, debug on, port **8000** (from `.flaskenv`) |
 | Run prod server | `make start` | Waitress on `127.0.0.1:8080`; optional port: `python server.py 9000` |
 | Run tests | `make test` | `pytest --verbosity=1 --cov` (testpaths: `tests/`) |
 | Lint | `make lint` | `ruff check .` — CI fails on lint errors |
 | Format | `make format` | `black .` |
-| Freeze deps | `make freeze` | Regenerates `requirements.txt` |
+| Freeze deps | `make freeze` | Regenerates `requirements.txt` (runtime) and `requirements-dev.txt` (full) from the venv |
 | Clean caches | `make clean` | Runs `./clean.sh` (removes `__pycache__`, `.pytest_cache`, `.ruff_cache`) |
 
 There is **no Docker** and no database migration tooling. CI (`.github/workflows/ci-cd.yml`)
-runs on every push: ruff → pytest, Python 3.12 only.
+runs two jobs on every push (Python 3.12): `build` (ruff → pytest, installs `requirements-dev.txt`)
+and `smoke-test` (installs runtime-only `requirements.txt`, boots `server.py`, and curls `/health`, `/`, `/5`, and a 404 path).
 
 ## Project Layout
 
@@ -41,8 +42,8 @@ app/
   utils/
     load_data.py     # Reads db/data.json into an immutable tuple
     validate.py      # Coerces/clamps the ?count path param; False on ValueError
-    Cache.py         # Redis wrapper: ping (memoized 5s), flush, content-keyed writes
-    Message.py       # Canonical response envelopes per status code
+    cache.py         # Redis wrapper: ping (memoized 5s), flush, content-keyed writes
+    message.py       # Canonical response envelopes per status code
     default_headers.py  # X-Author, X-Robots-Tag, CORS headers
     rate_limiter.py  # flask-limiter config (in-memory storage)
     print_logo.py    # Dev-only ASCII logo
@@ -53,6 +54,8 @@ tests/
   test_routes.py     # Integration tests via Flask test_client
   test_cache.py      # Cache tests (redis.Redis fully mocked)
   utils/             # Unit tests for validate, Message, headers, load_data
+requirements.txt     # Runtime deps only (frozen)
+requirements-dev.txt # Dev env (frozen): runtime + pytest, pytest-cov, coverage, ruff
 vercel.json          # Maps all routes → app/main.py (Vercel serverless entry)
 .flaskenv            # FLASK_RUN_PORT=8000
 ```
@@ -106,7 +109,8 @@ Loaded from `.env` via python-dotenv in `app/__init__.py` (`.env` is gitignored 
 
 ## Conventions & Gotchas
 
-- **Pinned deps:** exact `==` pins in both `requirements.txt` and `pyproject.toml`. Keep both in sync when adding/changing a dependency (add to `pyproject.toml` `[project].dependencies`, dev tools to `[project.optional-dependencies].dev`).
+- **Dependency management:** exact `==` pins. `pyproject.toml` is the declaration of record (runtime → `[project].dependencies`, dev tools → `[project.optional-dependencies].dev`); `requirements.txt` (runtime only) and `requirements-dev.txt` (full freeze) are for reproducible installs — CI installs `requirements-dev.txt`. Regenerate both with `make freeze` after changing `pyproject.toml`; hand-edits to the requirements files are lost on the next freeze.
+- **`six` is a hidden requirement:** `py-healthcheck` imports `six` without declaring it. The pin exists only for that — don't remove it or the app fails at import.
 - **Lint must pass:** `ruff check .` gates CI. Note `ignore-init-module-imports = true` in `pyproject.toml`.
 - **`ENV` defaults to `"development"` locally:** it comes from `VERCEL_ENV`, which only the Vercel platform sets (`production`/`preview`/`development`). Locally the dev logo prints; on Vercel `production` forces `DEBUG=False`.
 - **Rate limits are in-memory** (`storage_uri="memory://"`): per-process, reset on restart, not shared across Vercel instances. Route-level limits (90/min laws+health, 10/min `/env` and `/flush`) stack on the defaults (90/min, 50000/day).
@@ -115,9 +119,10 @@ Loaded from `.env` via python-dotenv in `app/__init__.py` (`.env` is gitignored 
 - **`Cache.ping` is memoized for 5 s** (`PING_TTL`) to avoid hammering Redis.
 - **`/flush` is best-effort:** it calls `flushall()` synchronously, but failures are caught, logged, and returned as `200` with `"flush": false` — an unreachable Redis never produces a 500.
 - **`validate()` clamps rather than rejects:** `/999` returns 50 laws (200); only non-integer input returns `False` → 400.
+- **Routing quirk — unknown single-segment paths 400, not 404:** `/foo` matches the `/<number>` route (no slash → default string converter), so `validate("foo")` fails → **400**. Only multi-segment unknown paths like `/foo/bar` match nothing → **404**. The CI smoke test and `test_get_nonexistent_route_returns_404` both rely on this.
 - **Path param is a string:** Flask passes `/<number>` as `str`; the route signature is `number: str = "1"` and `validate()` does the `int()` coercion. Don't change the hint to `int` — the value arrives as a string.
 - **Data is loaded once at import** into a tuple; edits to `db/data.json` require a process restart. Keep the JSON structure `{law, corollary?}` intact.
-- **Tests mock Redis entirely** (`@patch("app.utils.Cache.redis.Redis")`); no Redis server is needed to run the suite. The `/env` test conditionally asserts based on whether `SHOW_ENV_KEY` is set — keep it working in both cases.
+- **Tests mock Redis entirely** (`@patch("app.utils.cache.redis.Redis")`); no Redis server is needed to run the suite. The `/env` test conditionally asserts based on whether `SHOW_ENV_KEY` is set — keep it working in both cases.
 - **Vercel entry point is `app/main.py`** (see `vercel.json`), not `server.py`. `server.py` exists only for non-serverless hosting; its port comes from `sys.argv[1]`, default 8080, host is hardcoded `127.0.0.1`.
 - **`app/main.py` runs module-level side effects** (data load, limiter, cache, executor, signal handler) at import — importing it in tests triggers all of this. Be mindful when adding import-time work.
 

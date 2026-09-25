@@ -20,6 +20,8 @@ python3 -m venv .venv
 make install
 ```
 
+**NOTE:** Installs `requirements-dev.txt`, which includes the runtime dependencies from `requirements.txt` plus dev tools (pytest, ruff, coverage).
+
 ### Run app in dev
 
 ```sh

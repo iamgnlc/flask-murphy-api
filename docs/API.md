@@ -7,13 +7,13 @@ All responses are `application/json` and share a common envelope. Keys are
 
 ## Endpoints
 
-| Method | Path | Purpose | Rate limit |
-|---|---|---|---|
-| GET | `/` | 1 random law | 90/min (+ defaults) |
-| GET | `/{number}` | Up to `number` random laws (1–50) | 90/min (+ defaults) |
-| GET | `/health` | Liveness probe | 90/min (+ defaults) |
-| GET | `/env?key=…` | Whitelisted env vars (secret-gated) | 10/min (+ defaults) |
-| GET | `/flush` | Flush the Redis cache | 10/min (+ defaults) |
+| Method | Path         | Purpose                             | Rate limit          |
+| ------ | ------------ | ----------------------------------- | ------------------- |
+| GET    | `/`          | 1 random law                        | 90/min (+ defaults) |
+| GET    | `/{number}`  | Up to `number` random laws (1–50)   | 90/min (+ defaults) |
+| GET    | `/health`    | Liveness probe                      | 90/min (+ defaults) |
+| GET    | `/env?key=…` | Whitelisted env vars (secret-gated) | 10/min (+ defaults) |
+| GET    | `/flush`     | Flush the Redis cache               | 10/min (+ defaults) |
 
 Global defaults (apply to every route): `90 per minute`, `50000 per day`,
 keyed by client IP.
@@ -42,7 +42,9 @@ Returns one or more random Murphy's Laws.
     { "law": "Anything that can go wrong will go wrong." },
     {
       "law": "If there is a possibility of several things going wrong, the one that will cause the most damage will be the one to go wrong.",
-      "corollary": { "law": "If there is a worse time for something to go wrong, it will happen then." }
+      "corollary": {
+        "law": "If there is a worse time for something to go wrong, it will happen then."
+      }
     }
   ]
 }
@@ -52,9 +54,9 @@ Each law is `{ "law": string }`, optionally with `corollary: { "law": string }`.
 
 **Extra headers**
 
-| Header | Meaning |
-|---|---|
-| `X-Count` | Number of laws returned (== `returnCount`) |
+| Header          | Meaning                                     |
+| --------------- | ------------------------------------------- |
+| `X-Count`       | Number of laws returned (== `returnCount`)  |
 | `X-Total-Count` | Total laws in the dataset (== `totalCount`) |
 
 ---
@@ -111,25 +113,24 @@ It is the only endpoint that talks to Redis on the request path.
 
 ## Common Response Headers (all endpoints)
 
-| Header | Value |
-|---|---|
-| `X-Author` | `AUTHOR` env var |
-| `X-Robots-Tag` | `noindex` |
-| `Access-Control-Allow-Origin` | `*` |
-| `Access-Control-Allow-Credentials` | `true` |
-| `Access-Control-Allow-Methods` | `GET, OPTIONS, PATCH, DELETE, POST, PUT` |
-| `Access-Control-Allow-Headers` | `X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version` |
+| Header                             | Value                                                                                                                    |
+| ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| `X-Author`                         | `AUTHOR` env var                                                                                                         |
+| `X-Robots-Tag`                     | `noindex`                                                                                                                |
+| `Access-Control-Allow-Origin`      | `*`                                                                                                                      |
+| `Access-Control-Allow-Credentials` | `true`                                                                                                                   |
+| `Access-Control-Allow-Methods`     | `GET, OPTIONS, PATCH, DELETE, POST, PUT`                                                                                 |
+| `Access-Control-Allow-Headers`     | `X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version` |
 
 ## Error Format
 
 All errors use the same envelope, produced by the `Message` class:
 
-| Status | Body |
-|---|---|
-| 400 | `{ "code": 400, "status": "bad request" }` — non-integer `/{number}` |
+| Status | Body                                                                   |
+| ------ | ---------------------------------------------------------------------- || 400 | `{ "code": 400, "status": "bad request" }` — non-integer `/{number}`; also any unknown **single-segment** path like `/foo` (it matches `/<number>` and fails validation) |
 | 403 | `{ "code": 403, "status": "not authorized" }` — `/env` auth failure |
-| 404 | `{ "code": 404, "status": "not found" }` — unknown route |
-| 429 | `{ "code": 429, "status": "too many requests" }` — rate limit exceeded |
+| 404 | `{ "code": 404, "status": "not found" }` — unknown **multi-segment** path like `/foo/bar` |
+| 429    | `{ "code": 429, "status": "too many requests" }` — rate limit exceeded |
 
 Example:
 

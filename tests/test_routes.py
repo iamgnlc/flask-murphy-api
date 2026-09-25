@@ -1,5 +1,7 @@
-import pytest
 from unittest.mock import patch
+
+import pytest
+import redis
 
 from app.main import app
 
@@ -77,7 +79,7 @@ def test_get_flush_redis_down_returns_200(client):
     class ExplodingCache:
         @property
         def flush(self):
-            raise Exception("Redis down")
+            raise redis.ConnectionError("Redis down")
 
     with patch("app.main.cache", new=ExplodingCache()):
         response = client.get("/flush")
@@ -97,15 +99,13 @@ def test_get_nonexistent_route_returns_404(client):
 
 
 def test_rate_limit_returns_429(client):
-    with patch("app.main.limiter"):
-        # Trigger 429 directly via the error handler
-        with app.test_request_context():
-            from app.main import too_many_requests
+    with patch("app.main.limiter"), app.test_request_context():
+        from app.main import too_many_requests
 
-            response = too_many_requests(None)
-            data = response.get_json()
-            assert data["code"] == 429
-            assert data["status"] == "too many requests"
+        response = too_many_requests(None)
+        data = response.get_json()
+        assert data["code"] == 429
+        assert data["status"] == "too many requests"
 
 
 def test_get_over_max_clamps(client):

@@ -1,12 +1,12 @@
 import time
-from unittest.mock import patch, MagicMock
+from unittest.mock import MagicMock, patch
 
 import redis
 
-from app.utils.Cache import Cache
+from app.utils.cache import Cache
 
 
-@patch("app.utils.Cache.redis.Redis")
+@patch("app.utils.cache.redis.Redis")
 def test_ping_success(mock_redis_cls):
     mock_conn = MagicMock()
     mock_redis_cls.return_value = mock_conn
@@ -15,7 +15,7 @@ def test_ping_success(mock_redis_cls):
     mock_conn.ping.assert_called_once()
 
 
-@patch("app.utils.Cache.redis.Redis")
+@patch("app.utils.cache.redis.Redis")
 def test_ping_failure(mock_redis_cls):
     mock_conn = MagicMock()
     mock_conn.ping.side_effect = redis.ConnectionError("Connection refused")
@@ -24,7 +24,7 @@ def test_ping_failure(mock_redis_cls):
     assert cache.ping is False
 
 
-@patch("app.utils.Cache.redis.Redis")
+@patch("app.utils.cache.redis.Redis")
 def test_ping_memoized(mock_redis_cls):
     mock_conn = MagicMock()
     mock_redis_cls.return_value = mock_conn
@@ -37,7 +37,7 @@ def test_ping_memoized(mock_redis_cls):
     mock_conn.ping.assert_called_once()
 
 
-@patch("app.utils.Cache.redis.Redis")
+@patch("app.utils.cache.redis.Redis")
 def test_ping_refreshes_after_ttl(mock_redis_cls):
     mock_conn = MagicMock()
     mock_redis_cls.return_value = mock_conn
@@ -49,7 +49,7 @@ def test_ping_refreshes_after_ttl(mock_redis_cls):
     assert mock_conn.ping.call_count == 2
 
 
-@patch("app.utils.Cache.redis.Redis")
+@patch("app.utils.cache.redis.Redis")
 def test_flush(mock_redis_cls):
     mock_conn = MagicMock()
     mock_conn.flushall.return_value = True
@@ -59,7 +59,7 @@ def test_flush(mock_redis_cls):
     mock_conn.flushall.assert_called_once()
 
 
-@patch("app.utils.Cache.redis.Redis")
+@patch("app.utils.cache.redis.Redis")
 def test_update_with_laws(mock_redis_cls):
     mock_conn = MagicMock()
     mock_pipe = MagicMock()
@@ -72,7 +72,7 @@ def test_update_with_laws(mock_redis_cls):
     mock_pipe.execute.assert_called_once()
 
 
-@patch("app.utils.Cache.redis.Redis")
+@patch("app.utils.cache.redis.Redis")
 def test_update_empty_laws(mock_redis_cls):
     mock_conn = MagicMock()
     mock_redis_cls.return_value = mock_conn
@@ -81,7 +81,7 @@ def test_update_empty_laws(mock_redis_cls):
     mock_conn.pipeline.assert_not_called()
 
 
-@patch("app.utils.Cache.redis.Redis")
+@patch("app.utils.cache.redis.Redis")
 def test_update_connection_error(mock_redis_cls):
     mock_conn = MagicMock()
     mock_pipe = MagicMock()
@@ -94,7 +94,7 @@ def test_update_connection_error(mock_redis_cls):
     mock_pipe.execute.assert_called_once()
 
 
-@patch("app.utils.Cache.redis.Redis")
+@patch("app.utils.cache.redis.Redis")
 def test_content_based_keys_are_deterministic(mock_redis_cls):
     mock_conn = MagicMock()
     mock_pipe = MagicMock()

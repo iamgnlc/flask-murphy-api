@@ -1,6 +1,8 @@
-from waitress import serve
-from app import main
 import sys
+
+from waitress import serve
+
+from app import main
 
 HOST = "127.0.0.1"
 PORT = 8080

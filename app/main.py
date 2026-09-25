@@ -1,20 +1,28 @@
+import atexit
 import json
 import logging
 import os
 import random
 import signal
 import sys
+from concurrent.futures import ThreadPoolExecutor
 
+import redis
 from camel_converter import dict_to_camel
 from colorama import Fore, Style
-from flask import Flask, Response, request, abort
+from flask import Flask, Response, abort, request
 from healthcheck import HealthCheck
-from concurrent.futures import ThreadPoolExecutor
-import atexit
 
-from app import MAX_LAWS, SHOW_ENV_KEY, ENV, SAFE_ENV_VARS
-from app.utils import load_data, print_logo, validate, default_headers, rate_limiter
-from app.utils import Cache, Message
+from app import ENV, MAX_LAWS, SAFE_ENV_VARS, SHOW_ENV_KEY
+from app.utils import (
+    Cache,
+    Message,
+    default_headers,
+    load_data,
+    print_logo,
+    rate_limiter,
+    validate,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -51,7 +59,9 @@ def show_laws(laws):
     return send_response(payload=payload, headers=headers)
 
 
-def send_response(payload, status: int = 200, headers=default_headers()):
+def send_response(payload, status: int = 200, headers: dict | None = None):
+    if headers is None:
+        headers = default_headers()
     response = Response(
         json.dumps(payload),
         mimetype="application/json",
@@ -91,7 +101,7 @@ def flush():
     flushed = False
     try:
         flushed = cache.flush
-    except Exception as e:
+    except redis.RedisError as e:
         logger.error("Cache flush failed: %s", e)
     return send_response({**message.success, "flush": flushed})
 

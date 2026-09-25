@@ -1,13 +1,7 @@
-def validate(number: int, min: int = 1, max: int = 1):
+def validate(number: int, lower: int = 1, upper: int = 1):
     try:
         number = int(number)
     except ValueError:
         return False
 
-    if number > max:
-        number = max
-
-    if number < min:
-        number = min
-
-    return number
+    return max(lower, min(upper, number))

@@ -1,4 +1,4 @@
-from app.utils import Message
+from app.utils.message import Message
 
 message = Message()
 

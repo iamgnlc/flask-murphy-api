@@ -11,10 +11,11 @@ format:
 		black .
 
 freeze:
-		pip freeze -l > requirements.txt
+		pip freeze -l > requirements-dev.txt
+		pip freeze -l | grep -ivE "^(pytest|pytest-cov|coverage|ruff|iniconfig|pluggy)==" > requirements.txt
 
 install:
-		pip install -r requirements.txt
+		pip install -r requirements-dev.txt
 
 lint:
 		ruff check .

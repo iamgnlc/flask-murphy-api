@@ -7,28 +7,41 @@ All responses are `application/json` and share a common envelope. Keys are
 
 ## Endpoints
 
-| Method | Path         | Purpose                             | Rate limit          |
-| ------ | ------------ | ----------------------------------- | ------------------- |
-| GET    | `/`          | 1 random law                        | 90/min (+ defaults) |
-| GET    | `/{number}`  | Up to `number` random laws (1–50)   | 90/min (+ defaults) |
-| GET    | `/health`    | Liveness probe                      | 90/min (+ defaults) |
-| GET    | `/env?key=…` | Whitelisted env vars (secret-gated) | 10/min (+ defaults) |
-| GET    | `/flush`     | Flush the Redis cache               | 10/min (+ defaults) |
+| Method | Path                    | Purpose                             | Rate limit          |
+| ------ | ----------------------- | ----------------------------------- | ------------------- |
+| GET    | `/`                     | 1 random law (default locale)       | 90/min (+ defaults) |
+| GET    | `/{number}`             | Up to `number` laws (1–50), default locale | 90/min (+ defaults) |
+| GET    | `/{locale}`             | 1 random law in that locale         | 90/min (+ defaults) |
+| GET    | `/{locale}/{number}`    | Up to `number` laws in that locale  | 90/min (+ defaults) |
+| GET    | `/health`               | Liveness probe                      | 90/min (+ defaults) |
+| GET    | `/env?key=…`            | Whitelisted env vars (secret-gated) | 10/min (+ defaults) |
+| GET    | `/flush`                | Flush the Redis cache               | 10/min (+ defaults) |
+
+Available locales come from `db/data.<locale>.json` (`en`, `it`); the default
+locale is `en`.
+
+Trailing slashes are accepted everywhere (`/it/` == `/it`, `/it/2/` == `/it/2`).
 
 Global defaults (apply to every route): `90 per minute`, `50000 per day`,
 keyed by client IP.
 
 ---
 
-### `GET /` and `GET /{number}`
+### `GET /`, `GET /{number}`, `GET /{locale}`, and `GET /{locale}/{number}`
 
-Returns one or more random Murphy's Laws.
+Returns one or more random Murphy's Laws. Without a locale the default
+(`en`) is served.
 
-**Path parameter**
+**Path parameters**
 
+- `locale` — dataset language (e.g. `en`, `it`). An unknown locale → **404**.
 - `number` — how many laws to return.
-  - Non-integer (e.g. `/abc`) → **400**.
+  - Non-integer (e.g. `/it/abc`) → **400**.
   - Below `1` is clamped to 1; above `50` (`MAX_LAWS`) is clamped to 50 (`/999` → 50 laws, **200**).
+
+Note: a bare `/en` works because a single unknown segment matches `/{number}`
+and is dispatched to the locale handler. A single segment that is neither a
+known locale nor an integer (e.g. `/foo`) → **404**.
 
 **Response `200`**
 
@@ -38,6 +51,7 @@ Returns one or more random Murphy's Laws.
   "status": "success",
   "returnCount": 2,
   "totalCount": 912,
+  "locale": "en",
   "data": [
     { "law": "Anything that can go wrong will go wrong." },
     {
@@ -51,6 +65,7 @@ Returns one or more random Murphy's Laws.
 ```
 
 Each law is `{ "law": string }`, optionally with `corollary: { "law": string }`.
+`totalCount` is the size of the requested locale's dataset.
 
 **Extra headers**
 
@@ -58,6 +73,7 @@ Each law is `{ "law": string }`, optionally with `corollary: { "law": string }`.
 | --------------- | ------------------------------------------- |
 | `X-Count`       | Number of laws returned (== `returnCount`)  |
 | `X-Total-Count` | Total laws in the dataset (== `totalCount`) |
+| `X-Locale`      | Locale of the returned laws (== `locale`)   |
 
 ---
 
@@ -127,9 +143,9 @@ It is the only endpoint that talks to Redis on the request path.
 All errors use the same envelope, produced by the `Message` class:
 
 | Status | Body                                                                   |
-| ------ | ---------------------------------------------------------------------- || 400 | `{ "code": 400, "status": "bad request" }` — non-integer `/{number}`; also any unknown **single-segment** path like `/foo` (it matches `/<number>` and fails validation) |
+| ------ | ---------------------------------------------------------------------- || 400 | `{ "code": 400, "status": "bad request" }` — non-integer count on a valid resource, e.g. `/it/abc` |
 | 403 | `{ "code": 403, "status": "not authorized" }` — `/env` auth failure |
-| 404 | `{ "code": 404, "status": "not found" }` — unknown **multi-segment** path like `/foo/bar` |
+| 404 | `{ "code": 404, "status": "not found" }` — any unknown path: single-segment (`/foo`) or multi-segment (`/foo/bar`, `/xx/2`) |
 | 429    | `{ "code": 429, "status": "too many requests" }` — rate limit exceeded |
 
 Example:
@@ -141,11 +157,17 @@ Example:
 ## Quick Examples
 
 ```sh
-# One random law
+# One random law (default locale)
 curl -s http://localhost:8000/
 
 # Five laws (inspect count headers)
-curl -si http://localhost:8000/5 | grep -iE "x-count|x-total"
+curl -si http://localhost:8000/5 | grep -iE "x-count|x-total|x-locale"
+
+# One law in English
+curl -s http://localhost:8000/en
+
+# Two laws in Italian
+curl -s http://localhost:8000/it/2
 
 # Health
 curl -s http://localhost:8000/health

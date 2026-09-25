@@ -12,11 +12,11 @@ How **flask-murphy-api** is structured and why. For endpoint-level detail see
     maps / → main.py)            │
               ┌──────────────────┼───────────────────────┐
               ▼                  ▼                       ▼
-      db/data.json         app/utils/*                redis (optional)
-      (912 laws,           validate / Message /       murphy:<md5> keys,
-       loaded once at      default_headers /          written async, TTL =
-       import, immutable   rate_limiter / Cache       CACHE_TTL
-       in-memory tuple)
+      db/data.<locale>.json  app/utils/*                redis (optional)
+      (912 laws × 2 locales,  validate / Message /
+       loaded once at        default_headers /
+       import, immutable     rate_limiter / Cache
+       in-memory tuples)
 ```
 
 There is no database, no ORM, and no authentication middleware. The entire
@@ -28,7 +28,7 @@ domain is "sample N items from an immutable in-memory list and serialize them."
 | ------------------------------ | ------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `app/__init__.py`              | Config constants   | Reads all env vars once via dotenv; exports `MAX_LAWS=50`, `SAFE_ENV_VARS`, `__version__`; `ENV` falls back to `"development"` when `VERCEL_ENV` is unset. Everything else imports config from here. |
 | `app/main.py`                  | The app itself     | All 4 routes, all error handlers, response assembly. Vercel serverless entry point.                                                                                                                  |
-| `app/utils/load_data.py`       | Dataset loading    | Resolves `db/data.json` relative to its own file (3 levels up), returns an immutable `tuple`.                                                                                                        |
+| `app/utils/load_data.py`       | Dataset loading    | Resolves `db/data.<locale>.json` relative to its own file (3 levels up); `load_data(locale)` returns an immutable `tuple`, `available_locales()` discovers locales from filenames.                |
 | `app/utils/validate.py`        | Input coercion     | `int()` conversion; `False` on `ValueError`; clamps into `[min, max]` instead of rejecting.                                                                                                          |
 | `app/utils/cache.py`           | Redis integration  | Lazy-connecting `redis.Redis`; memoized ping; pipeline writes; content-addressed keys.                                                                                                               |
 | `app/utils/message.py`         | Response envelopes | Single source of truth for `{code, status}` payloads.                                                                                                                                                |
@@ -37,14 +37,15 @@ domain is "sample N items from an immutable in-memory list and serialize them."
 | `app/utils/print_logo.py`      | Dev cosmetics      | ASCII logo when `ENV == "development"`.                                                                                                                                                              |
 | `server.py`                    | Waitress host      | Hardcoded `127.0.0.1:8080`, optional port via `sys.argv[1]`. Not used on Vercel.                                                                                                                     |
 
-## Request Lifecycle: `GET /<number>`
+## Request Lifecycle: `GET /<number>` or `GET /<locale>/<number>`
 
 1. **Rate limit** — route limit `90 per minute` stacks on defaults (`90 per minute`, `50000 per day`), keyed by client IP, stored in-process.
-2. **Validate** — `validate(number, 1, MAX_LAWS)` coerces the path segment to `int`. Non-numeric → `False` → `abort(400)`. Out-of-range values are **clamped** (`/999` → 50, `/-5` → 1).
-3. **Sample** — `random.sample(data, number)` picks unique laws from the in-memory tuple (loaded once at import).
-4. **Cache (fire-and-forget)** — if `CACHE_ENABLED` and Redis answers `ping` (memoized for 5 s), the laws are pushed to Redis on a 5-worker `ThreadPoolExecutor` so response latency never depends on Redis. Write failures are logged, never raised.
-5. **Serialize** — payload merges `Message.success` + camelCased metadata (`returnCount`, `totalCount`) + `data`; response merges `default_headers()` + `X-Count` + `X-Total-Count`.
-6. **Respond** — `Response(json.dumps(payload), mimetype="application/json", status=200)`.
+2. **Dispatch** — `/` and single segments (`/2`, `/en`) hit `main()`; `/en/2`-style two-segment paths hit `main_locale()`. A single segment naming a known locale is served as a locale request with count 1; anything else is a count for the default locale.
+3. **Validate** — `validate(number, 1, MAX_LAWS)` coerces the count segment to `int`. Non-numeric → `False` → `abort(400)`. Out-of-range values are **clamped** (`/999` → 50, `/-5` → 1). An unknown locale (`/xx` or `/xx/2`) or any other path identifying no resource (e.g. `/foo`) → `abort(404)`.
+4. **Sample** — `random.sample(data[locale], number)` picks unique laws from the locale's in-memory tuple (all locales loaded once at import).
+5. **Cache (fire-and-forget)** — if `CACHE_ENABLED` and Redis answers `ping` (memoized for 5 s), the laws are pushed to Redis on a 5-worker `ThreadPoolExecutor` so response latency never depends on Redis. Write failures are logged, never raised. Keys are content-addressed (`murphy:<md5(sorted JSON)>`), so the same law in different locales naturally maps to different keys.
+6. **Serialize** — payload merges `Message.success` + camelCased metadata (`returnCount`, `totalCount`, `locale`) + `data`; response merges `default_headers()` + `X-Count` + `X-Total-Count` + `X-Locale`.
+7. **Respond** — `Response(json.dumps(payload), mimetype="application/json", status=200)`.
 
 Errors never leak internals: 400/403/404/429 are converted to the canonical
 envelope by module-level `@app.errorhandler` handlers using the `Message` class.
@@ -68,9 +69,7 @@ URI to a shared Redis — the `Limiter` construction is isolated in
 
 ### Immutable data, loaded once
 
-`load_data()` returns a `tuple` and runs at import time. The dataset is
-effectively a build-time constant; hot-reloading it is out of scope. On Vercel
-the JSON is bundled with the function.
+`load_data(locale)` returns a `tuple` per locale and runs at import time for every file matching `db/data.<locale>.json` (via `available_locales()`). The datasets are effectively build-time constants; hot-reloading is out of scope. Adding a language is dropping a `db/data.<locale>.json` file and (optionally) no code changes. On Vercel the JSON files are bundled with the function.
 
 ### Single-file app, thin utilities
 
@@ -101,7 +100,7 @@ forces `DEBUG=False`.
 
 - `tests/test_routes.py` — integration tests through `app.test_client()`; covers every route, error handler, clamping, and headers. `/flush` is tested with `cache` mocked; the `/env` test branches on whether `SHOW_ENV_KEY` is set so it passes with or without secrets.
 - `tests/test_cache.py` — `redis.Redis` is fully patched; verifies ping memoization/TTL refresh, pipeline writes, empty-input no-op, and `ConnectionError` swallowing.
-- `tests/utils/` — pure unit tests for `validate`, `Message`, `default_headers`, `load_data`.
+- `tests/utils/` — pure unit tests for `validate`, `Message`, `default_headers`, `load_data` (including locale discovery).
 - No Redis server or network is required to run the suite: `make test`.
 
 ## Deployment

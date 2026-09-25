@@ -3,6 +3,7 @@ from unittest.mock import patch
 import pytest
 import redis
 
+from app import DEFAULT_LOCALE
 from app.main import app
 
 
@@ -31,12 +32,92 @@ def test_get_multiple_laws(client):
     assert len(data["data"]) == 5
 
 
-def test_get_invalid_input_returns_400(client):
-    response = client.get("/notanumber")
+def test_get_root_returns_default_locale(client):
+    response = client.get("/")
+    assert response.status_code == 200
+    data = response.get_json()
+    assert data["locale"] == DEFAULT_LOCALE
+    assert response.headers["X-Locale"] == DEFAULT_LOCALE
+    assert all("Tutto" not in law["law"] for law in data["data"])
+
+
+def test_get_count_route_returns_default_locale(client):
+    response = client.get("/5")
+    assert response.status_code == 200
+    data = response.get_json()
+    assert data["locale"] == DEFAULT_LOCALE
+    assert data["returnCount"] == 5
+
+
+def test_get_locale_returns_one_law(client):
+    response = client.get("/en")
+    assert response.status_code == 200
+    data = response.get_json()
+    assert data["code"] == 200
+    assert data["locale"] == "en"
+    assert data["returnCount"] == 1
+    assert len(data["data"]) == 1
+    assert response.headers["X-Locale"] == "en"
+
+
+def test_get_locale_with_count(client):
+    response = client.get("/it/2")
+    assert response.status_code == 200
+    data = response.get_json()
+    assert data["locale"] == "it"
+    assert data["returnCount"] == 2
+    assert len(data["data"]) == 2
+    assert response.headers["X-Locale"] == "it"
+
+
+def test_get_unknown_locale_with_count_returns_404(client):
+    response = client.get("/xx/2")
+    assert response.status_code == 404
+    data = response.get_json()
+    assert data["code"] == 404
+    assert data["status"] == "not found"
+
+
+def test_get_locale_with_invalid_count_returns_400(client):
+    response = client.get("/it/abc")
     assert response.status_code == 400
     data = response.get_json()
     assert data["code"] == 400
     assert data["status"] == "bad request"
+
+
+def test_get_locale_clamps_over_max(client):
+    response = client.get("/it/999")
+    assert response.status_code == 200
+    data = response.get_json()
+    assert data["locale"] == "it"
+    assert data["returnCount"] == 50
+
+
+def test_get_unknown_single_segment_returns_404(client):
+    # /foo matches /<number> but identifies no resource: 404, not 400.
+    for path in ("/foo", "/notanumber", "/foo/"):
+        response = client.get(path)
+        assert response.status_code == 404
+        data = response.get_json()
+        assert data["code"] == 404
+        assert data["status"] == "not found"
+
+
+def test_trailing_slash_is_accepted_on_all_routes(client):
+    # strict_slashes is disabled: /it/ == /it, /5/ == /5, etc.
+    response = client.get("/it/")
+    assert response.status_code == 200
+    data = response.get_json()
+    assert data["locale"] == "it"
+    assert data["returnCount"] == 1
+
+    for path in ("/5/", "/en/3/", "/it/2/", "/health/"):
+        response = client.get(path)
+        assert response.status_code == 200, path
+
+    response = client.get("/xx/2/")
+    assert response.status_code == 404
 
 
 def test_get_health_returns_200(client):

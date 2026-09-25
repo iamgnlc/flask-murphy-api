@@ -7,11 +7,14 @@
 
 **flask-murphy-api** (v1.0.0) — a small, production-deployed JSON REST API that
 returns random **Murphy's Law** quotes. It is intentionally minimal: one Flask
-app module, a handful of pure utility functions, one JSON data file (912 laws
-in `db/data.json`), and an optional Redis cache. It runs locally under
-Waitress and deploys to **Vercel** as a serverless Python function.
+app module, a handful of pure utility functions, per-locale JSON data files
+(912 laws each in `db/data.en.json` and `db/data.it.json`), and an optional
+Redis cache. It runs locally under Waitress and deploys to **Vercel** as a
+serverless Python function.
 
-Typical usage: `GET /` returns 1 random law; `GET /5` returns 5.
+Typical usage: `GET /` returns 1 random law in the default locale (`en`);
+`GET /5` returns 5; `GET /en` returns 1 English law; `GET /it/2` returns 2
+Italian laws.
 
 **Stack:** Python ≥ 3.12, Flask 3, flask-limiter, redis-py, waitress, camel-converter,
 colorama, py-healthcheck, python-dotenv. Tests: pytest + pytest-cov. Tooling: ruff (lint), black (format).
@@ -40,7 +43,7 @@ app/
   __init__.py        # Constants: env vars, MAX_LAWS=50, SAFE_ENV_VARS, __version__
   main.py            # THE Flask app: all routes, error handlers, wiring
   utils/
-    load_data.py     # Reads db/data.json into an immutable tuple
+    load_data.py     # Reads db/data.<locale>.json into immutable tuples; available_locales()
     validate.py      # Coerces/clamps the ?count path param; False on ValueError
     cache.py         # Redis wrapper: ping (memoized 5s), flush, content-keyed writes
     message.py       # Canonical response envelopes per status code
@@ -48,7 +51,8 @@ app/
     rate_limiter.py  # flask-limiter config (in-memory storage)
     print_logo.py    # Dev-only ASCII logo
 db/
-  data.json          # 912 laws: {"law": str, "corollary"?: {"law": str}}
+  data.en.json       # 912 laws (English): {"law": str, "corollary"?: {"law": str}}
+  data.it.json       # 912 laws (Italian): same structure
 server.py            # Waitress entrypoint for local/prod (NOT used by Vercel)
 tests/
   test_routes.py     # Integration tests via Flask test_client
@@ -62,12 +66,17 @@ vercel.json          # Maps all routes → app/main.py (Vercel serverless entry)
 
 ## Architecture in One Paragraph
 
-`app/main.py` builds the Flask app at import time: it loads the quote data once
-(`load_data()`), configures a `Limiter`, and instantiates `Message`, `Cache`,
-and a 5-worker `ThreadPoolExecutor` for async cache writes. `GET /<number>`
-validates/clamps the requested count (1–50), samples randomly from the in-memory
-tuple, fires a fire-and-forget cache write when Redis is enabled and reachable,
-and returns a camelCase JSON envelope with custom headers. Errors (400/403/404/429)
+`app/main.py` builds the Flask app at import time: it loads every locale's
+quote data once (`load_data(locale)` for each `available_locales()`),
+configures a `Limiter`, and instantiates `Message`, `Cache`, and a 5-worker
+`ThreadPoolExecutor` for async cache writes. `GET /<locale>/<number>` (and the
+bare `/<number>` form, which uses the default locale) validates/clamps the
+requested count (1–50), samples randomly from the locale's in-memory tuple,
+fires a fire-and-forget cache write when Redis is enabled and reachable, and
+returns a camelCase JSON envelope that includes `locale` plus custom headers
+(`X-Locale`, `X-Count`, `X-Total-Count`). Single-segment locale paths (`/en`)
+are dispatched by the `/<number>` handler since they match that route; unknown
+locales (`/xx`, `/xx/2`) and any other unknown path 404. Errors (400/403/404/429)
 are handled centrally and returned in the same envelope. There is no ORM, no
 auth (except a shared-secret query param on `/env`), and no persistent state
 besides the optional Redis cache.
@@ -82,13 +91,14 @@ All endpoints return JSON in this shape (keys camelCase via `camel_converter`):
   "status": "success",
   "returnCount": 1,
   "totalCount": 912,
+  "locale": "en",
   "data": [{ "law": "Anything that can go wrong will go wrong." }]
 }
 ```
 
 Every response also carries headers from `default_headers()` (`X-Author`,
-`X-Robots-Tag: noindex`, permissive CORS) plus `X-Count` and `X-Total-Count`
-on law endpoints. Status messages come only from the `Message` class — never
+`X-Robots-Tag: noindex`, permissive CORS) plus `X-Count`, `X-Total-Count`, and
+`X-Locale` on law endpoints. Status messages come only from the `Message` class — never
 hardcode status strings in routes.
 
 ## Environment Variables
@@ -118,10 +128,12 @@ Loaded from `.env` via python-dotenv in `app/__init__.py` (`.env` is gitignored 
 - **Cache keys are content-addressed:** `murphy:<md5 of sorted JSON>` — the same law always maps to the same key (dedup by design).
 - **`Cache.ping` is memoized for 5 s** (`PING_TTL`) to avoid hammering Redis.
 - **`/flush` is best-effort:** it calls `flushall()` synchronously, but failures are caught, logged, and returned as `200` with `"flush": false` — an unreachable Redis never produces a 500.
-- **`validate()` clamps rather than rejects:** `/999` returns 50 laws (200); only non-integer input returns `False` → 400.
-- **Routing quirk — unknown single-segment paths 400, not 404:** `/foo` matches the `/<number>` route (no slash → default string converter), so `validate("foo")` fails → **400**. Only multi-segment unknown paths like `/foo/bar` match nothing → **404**. The CI smoke test and `test_get_nonexistent_route_returns_404` both rely on this.
+- **`validate()` clamps rather than rejects:** `/999` returns 50 laws (200); only non-integer input returns `False` → 400 (e.g. `/it/abc`).
+- **Routing — unknown paths 404:** a single segment that is neither a known locale nor an integer (`/foo`) 404s (the handler checks before validation), as do unknown two-segment paths like `/xx/2` or `/foo/bar`. The CI smoke test and `test_get_unknown_single_segment_returns_404` rely on this.
+- **`app.url_map.strict_slashes = False`** (set in `app/main.py`): trailing slashes are accepted on every route (`/it/` == `/it`). Remove it and `/it/` starts 404ing.
 - **Path param is a string:** Flask passes `/<number>` as `str`; the route signature is `number: str = "1"` and `validate()` does the `int()` coercion. Don't change the hint to `int` — the value arrives as a string.
-- **Data is loaded once at import** into a tuple; edits to `db/data.json` require a process restart. Keep the JSON structure `{law, corollary?}` intact.
+- **Data is loaded once at import** into per-locale tuples; edits to `db/data.<locale>.json` require a process restart. Keep the JSON structure `{law, corollary?}` intact.
+- **Locales are discovered from filenames:** dropping `db/data.<locale>.json` into `db/` adds a language with no code changes. `DEFAULT_LOCALE` (`app/__init__.py`) controls what `/` and `/<number>` serve. `/en` matches `/<number>`, so the handler dispatches on known locales; unknown single segments (e.g. `/foo`) 404 and unknown two-segment paths (`/xx/2`) 404.
 - **Tests mock Redis entirely** (`@patch("app.utils.cache.redis.Redis")`); no Redis server is needed to run the suite. The `/env` test conditionally asserts based on whether `SHOW_ENV_KEY` is set — keep it working in both cases.
 - **Vercel entry point is `app/main.py`** (see `vercel.json`), not `server.py`. `server.py` exists only for non-serverless hosting; its port comes from `sys.argv[1]`, default 8080, host is hardcoded `127.0.0.1`.
 - **`app/main.py` runs module-level side effects** (data load, limiter, cache, executor, signal handler) at import — importing it in tests triggers all of this. Be mindful when adding import-time work.

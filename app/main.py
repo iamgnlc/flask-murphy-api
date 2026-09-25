@@ -13,10 +13,11 @@ from colorama import Fore, Style
 from flask import Flask, Response, abort, request
 from healthcheck import HealthCheck
 
-from app import ENV, MAX_LAWS, SAFE_ENV_VARS, SHOW_ENV_KEY
+from app import DEFAULT_LOCALE, ENV, MAX_LAWS, SAFE_ENV_VARS, SHOW_ENV_KEY
 from app.utils import (
     Cache,
     Message,
+    available_locales,
     default_headers,
     load_data,
     print_logo,
@@ -27,6 +28,8 @@ from app.utils import (
 logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
+# "/path" and "/path/" are equivalent on every route (e.g. /it == /it/).
+app.url_map.strict_slashes = False
 cache_executor = ThreadPoolExecutor(max_workers=5)
 atexit.register(lambda: cache_executor.shutdown(wait=True))
 if ENV == "production":  # pragma: no cover
@@ -35,7 +38,7 @@ if ENV == "production":  # pragma: no cover
 if ENV == "development":
     print_logo()
 
-data = load_data()
+data = {locale: load_data(locale) for locale in available_locales()}
 limiter = rate_limiter(app)
 
 health_check = HealthCheck()
@@ -43,14 +46,16 @@ message = Message()
 cache = Cache()
 
 
-def show_laws(laws):
+def show_laws(laws, locale=DEFAULT_LOCALE):
     meta_data = {
         "return_count": len(laws),
-        "total_count": len(data),
+        "total_count": len(data[locale]),
+        "locale": locale,
     }
     custom_headers = {
         "X-Count": meta_data["return_count"],
         "X-Total-Count": meta_data["total_count"],
+        "X-Locale": locale,
     }
     headers = {**default_headers(), **custom_headers}
 
@@ -107,22 +112,50 @@ def flush():
 
 
 # Show law(s).
+# ``/<locale>`` (e.g. /en) is intentionally NOT a route: it matches the
+# ``/<number>`` rule (both are single segments) and is dispatched by main().
 @app.route("/")
 @app.route("/<number>")
 @limiter.limit("90 per minute")
 def main(number: str = "1"):
+    # ``/<number>`` also matches single-segment locales like /en; when the
+    # segment is a known locale, serve it with the default count.
+    if number in data:
+        locale, number = number, "1"
+    else:
+        locale = DEFAULT_LOCALE
+        # A single segment that is neither a known locale nor an integer
+        # (e.g. /foo) identifies no resource → 404, not 400.
+        if validate(number, 1, MAX_LAWS) is False:
+            abort(404)
+
+    return serve_laws(locale, number)
+
+
+@app.route("/<locale>/<number>")
+@limiter.limit("90 per minute")
+def main_locale(locale: str, number: str):
+    # An unknown locale means the resource does not exist (404), e.g.
+    # /foo/bar; a known locale with an invalid count is a 400.
+    if locale not in data:
+        abort(404)
+
+    return serve_laws(locale, number)
+
+
+def serve_laws(locale: str, number: str):
     number = validate(number, 1, MAX_LAWS)
 
     if number is False:
         abort(400)
 
-    laws = random.sample(data, number)
+    laws = random.sample(data[locale], number)
 
     # Push to cache if enabled and responding.
     if cache.is_enabled and cache.ping:
         cache_executor.submit(cache.update, laws)
 
-    return show_laws(laws)
+    return show_laws(laws, locale=locale)
 
 
 @app.errorhandler(400)

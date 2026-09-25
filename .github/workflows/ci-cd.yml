@@ -59,9 +59,19 @@ jobs:
           curl -fsS http://127.0.0.1:8080/5 | grep -o '"returnCount": 5' > /dev/null
           curl -fsS -D - -o /dev/null http://127.0.0.1:8080/5 | grep -i '^x-count: 5'
 
-          # Unknown MULTI-SEGMENT routes produce a JSON 404 envelope.
-          # (A single unknown segment like /foo matches /<number> and 400s instead.)
+          # /en serves the default locale and reports it in body + header.
+          curl -fsS http://127.0.0.1:8080/en | grep -o '"locale": "en"' > /dev/null
+          curl -fsS -D - -o /dev/null http://127.0.0.1:8080/en | grep -i '^x-locale: en'
+
+          # /it/2 returns two Italian laws.
+          curl -fsS http://127.0.0.1:8080/it/2 | grep -o '"locale": "it"' > /dev/null
+          curl -fsS http://127.0.0.1:8080/it/2 | grep -o '"returnCount": 2' > /dev/null
+
+          # Unknown routes (single- or multi-segment) produce a JSON 404 envelope.
           CODE=$(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:8080/some/nonexistent/path)
+          [ "$CODE" = "404" ] || { echo "expected 404, got $CODE"; exit 1; }
+
+          CODE=$(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:8080/foo)
           [ "$CODE" = "404" ] || { echo "expected 404, got $CODE"; exit 1; }
 
           echo "Smoke test passed."

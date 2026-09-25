@@ -19,6 +19,9 @@ ENV = os.getenv("VERCEL_ENV", "development")
 
 MAX_LAWS = 50
 
+# Locale served by "/" and "/{number}"; must match a db/data.<locale>.json file.
+DEFAULT_LOCALE = "en"
+
 SAFE_ENV_VARS = [
     "AUTHOR",
     "CACHE_ENABLED",

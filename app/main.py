@@ -1,4 +1,5 @@
 import json
+import logging
 import os
 import random
 import signal
@@ -14,6 +15,8 @@ import atexit
 from app import MAX_LAWS, SHOW_ENV_KEY, ENV, SAFE_ENV_VARS
 from app.utils import load_data, print_logo, validate, default_headers, rate_limiter
 from app.utils import Cache, Message
+
+logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
 cache_executor = ThreadPoolExecutor(max_workers=5)
@@ -84,14 +87,20 @@ def health():
 @app.route("/flush")
 @limiter.limit("10 per minute")
 def flush():
-    return send_response({**message.success, "flush": cache.flush})
+    # Best-effort: never let an unreachable Redis turn into a 500.
+    flushed = False
+    try:
+        flushed = cache.flush
+    except Exception as e:
+        logger.error("Cache flush failed: %s", e)
+    return send_response({**message.success, "flush": flushed})
 
 
 # Show law(s).
 @app.route("/")
 @app.route("/<number>")
 @limiter.limit("90 per minute")
-def main(number: int = 1):
+def main(number: str = "1"):
     number = validate(number, 1, MAX_LAWS)
 
     if number is False:

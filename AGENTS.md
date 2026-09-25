@@ -1,0 +1,130 @@
+# AGENTS.md
+
+> Instructions and context for AI coding agents working in this repository.
+> Read this before making changes. Details live in [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) and [docs/API.md](docs/API.md).
+
+## What This Project Is
+
+**flask-murphy-api** (v1.0.0) — a small, production-deployed JSON REST API that
+returns random **Murphy's Law** quotes. It is intentionally minimal: one Flask
+app module, a handful of pure utility functions, one JSON data file (912 laws
+in `db/data.json`), and an optional Redis cache. It runs locally under
+Waitress and deploys to **Vercel** as a serverless Python function.
+
+Typical usage: `GET /` returns 1 random law; `GET /5` returns 5.
+
+**Stack:** Python ≥ 3.12, Flask 3, flask-limiter, redis-py, waitress, camel-converter,
+colorama, py-healthcheck, python-dotenv. Tests: pytest + pytest-cov. Tooling: ruff (lint), black (format).
+
+## Commands
+
+| Task | Command | Notes |
+|---|---|---|
+| Install deps | `make install` | `pip install -r requirements.txt` |
+| Run dev server | `make dev` | Flask dev server, debug on, port **8000** (from `.flaskenv`) |
+| Run prod server | `make start` | Waitress on `127.0.0.1:8080`; optional port: `python server.py 9000` |
+| Run tests | `make test` | `pytest --verbosity=1 --cov` (testpaths: `tests/`) |
+| Lint | `make lint` | `ruff check .` — CI fails on lint errors |
+| Format | `make format` | `black .` |
+| Freeze deps | `make freeze` | Regenerates `requirements.txt` |
+| Clean caches | `make clean` | Runs `./clean.sh` (removes `__pycache__`, `.pytest_cache`, `.ruff_cache`) |
+
+There is **no Docker** and no database migration tooling. CI (`.github/workflows/ci-cd.yml`)
+runs on every push: ruff → pytest, Python 3.12 only.
+
+## Project Layout
+
+```
+app/
+  __init__.py        # Constants: env vars, MAX_LAWS=50, SAFE_ENV_VARS, __version__
+  main.py            # THE Flask app: all routes, error handlers, wiring
+  utils/
+    load_data.py     # Reads db/data.json into an immutable tuple
+    validate.py      # Coerces/clamps the ?count path param; False on ValueError
+    Cache.py         # Redis wrapper: ping (memoized 5s), flush, content-keyed writes
+    Message.py       # Canonical response envelopes per status code
+    default_headers.py  # X-Author, X-Robots-Tag, CORS headers
+    rate_limiter.py  # flask-limiter config (in-memory storage)
+    print_logo.py    # Dev-only ASCII logo
+db/
+  data.json          # 912 laws: {"law": str, "corollary"?: {"law": str}}
+server.py            # Waitress entrypoint for local/prod (NOT used by Vercel)
+tests/
+  test_routes.py     # Integration tests via Flask test_client
+  test_cache.py      # Cache tests (redis.Redis fully mocked)
+  utils/             # Unit tests for validate, Message, headers, load_data
+vercel.json          # Maps all routes → app/main.py (Vercel serverless entry)
+.flaskenv            # FLASK_RUN_PORT=8000
+```
+
+## Architecture in One Paragraph
+
+`app/main.py` builds the Flask app at import time: it loads the quote data once
+(`load_data()`), configures a `Limiter`, and instantiates `Message`, `Cache`,
+and a 5-worker `ThreadPoolExecutor` for async cache writes. `GET /<number>`
+validates/clamps the requested count (1–50), samples randomly from the in-memory
+tuple, fires a fire-and-forget cache write when Redis is enabled and reachable,
+and returns a camelCase JSON envelope with custom headers. Errors (400/403/404/429)
+are handled centrally and returned in the same envelope. There is no ORM, no
+auth (except a shared-secret query param on `/env`), and no persistent state
+besides the optional Redis cache.
+
+## Response Contract (do not break)
+
+All endpoints return JSON in this shape (keys camelCase via `camel_converter`):
+
+```json
+{
+  "code": 200,
+  "status": "success",
+  "returnCount": 1,
+  "totalCount": 912,
+  "data": [{ "law": "Anything that can go wrong will go wrong." }]
+}
+```
+
+Every response also carries headers from `default_headers()` (`X-Author`,
+`X-Robots-Tag: noindex`, permissive CORS) plus `X-Count` and `X-Total-Count`
+on law endpoints. Status messages come only from the `Message` class — never
+hardcode status strings in routes.
+
+## Environment Variables
+
+Loaded from `.env` via python-dotenv in `app/__init__.py` (`.env` is gitignored — never commit or echo its contents):
+
+| Variable | Purpose |
+|---|---|
+| `AUTHOR` | Sent as `X-Author` header; also exposed via `/env` |
+| `SHOW_ENV_KEY` | Shared secret required as `?key=` on `/env` (empty/absent ⇒ always 403) |
+| `CACHE_HOST` / `CACHE_PORT` / `CACHE_PASSWORD` | Redis connection |
+| `CACHE_TTL` | Expiry (seconds) for cached law keys |
+| `CACHE_ENABLED` | `"1"`/`"0"`-style flag; `Cache.is_enabled` does `bool(int(...))` |
+| `VERCEL_ENV` | Read as `ENV`; `production` forces `DEBUG=False`, `development` prints the logo. Unset locally. |
+
+`SAFE_ENV_VARS` whitelists which of these `/env` may ever return (never includes
+`SHOW_ENV_KEY` or `CACHE_PASSWORD`).
+
+## Conventions & Gotchas
+
+- **Pinned deps:** exact `==` pins in both `requirements.txt` and `pyproject.toml`. Keep both in sync when adding/changing a dependency (add to `pyproject.toml` `[project].dependencies`, dev tools to `[project.optional-dependencies].dev`).
+- **Lint must pass:** `ruff check .` gates CI. Note `ignore-init-module-imports = true` in `pyproject.toml`.
+- **`ENV` defaults to `"development"` locally:** it comes from `VERCEL_ENV`, which only the Vercel platform sets (`production`/`preview`/`development`). Locally the dev logo prints; on Vercel `production` forces `DEBUG=False`.
+- **Rate limits are in-memory** (`storage_uri="memory://"`): per-process, reset on restart, not shared across Vercel instances. Route-level limits (90/min laws+health, 10/min `/env` and `/flush`) stack on the defaults (90/min, 50000/day).
+- **Cache writes are asynchronous** via `ThreadPoolExecutor` and swallow `redis.ConnectionError` — request latency never depends on Redis, and Redis being down never 500s the main route.
+- **Cache keys are content-addressed:** `murphy:<md5 of sorted JSON>` — the same law always maps to the same key (dedup by design).
+- **`Cache.ping` is memoized for 5 s** (`PING_TTL`) to avoid hammering Redis.
+- **`/flush` is best-effort:** it calls `flushall()` synchronously, but failures are caught, logged, and returned as `200` with `"flush": false` — an unreachable Redis never produces a 500.
+- **`validate()` clamps rather than rejects:** `/999` returns 50 laws (200); only non-integer input returns `False` → 400.
+- **Path param is a string:** Flask passes `/<number>` as `str`; the route signature is `number: str = "1"` and `validate()` does the `int()` coercion. Don't change the hint to `int` — the value arrives as a string.
+- **Data is loaded once at import** into a tuple; edits to `db/data.json` require a process restart. Keep the JSON structure `{law, corollary?}` intact.
+- **Tests mock Redis entirely** (`@patch("app.utils.Cache.redis.Redis")`); no Redis server is needed to run the suite. The `/env` test conditionally asserts based on whether `SHOW_ENV_KEY` is set — keep it working in both cases.
+- **Vercel entry point is `app/main.py`** (see `vercel.json`), not `server.py`. `server.py` exists only for non-serverless hosting; its port comes from `sys.argv[1]`, default 8080, host is hardcoded `127.0.0.1`.
+- **`app/main.py` runs module-level side effects** (data load, limiter, cache, executor, signal handler) at import — importing it in tests triggers all of this. Be mindful when adding import-time work.
+
+## Definition of Done
+
+1. `make lint` passes.
+2. `make test` passes (add/adjust tests for behavior changes — route changes go in `tests/test_routes.py`, cache behavior in `tests/test_cache.py`, pure utilities in `tests/utils/`).
+3. Response envelope, headers, and status messages stay consistent with `Message` / `default_headers`.
+4. New env vars: added to `app/__init__.py`, and to `SAFE_ENV_VARS` **only if** they are safe to expose via `/env`.
+5. No secrets in code, commits, or docs.

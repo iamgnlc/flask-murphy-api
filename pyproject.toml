@@ -32,8 +32,5 @@ dev = [
 
 [tool.black]
 
-[tool.ruff]
-ignore-init-module-imports = true
-
 [tool.pytest.ini_options]
 testpaths = ["tests"]

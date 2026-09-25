@@ -72,6 +72,22 @@ def test_get_flush(client):
         assert "flush" in data
 
 
+def test_get_flush_redis_down_returns_200(client):
+    # /flush is best-effort: an unreachable Redis must not produce a 500.
+    class ExplodingCache:
+        @property
+        def flush(self):
+            raise Exception("Redis down")
+
+    with patch("app.main.cache", new=ExplodingCache()):
+        response = client.get("/flush")
+    assert response.status_code == 200
+    data = response.get_json()
+    assert data["code"] == 200
+    assert data["status"] == "success"
+    assert data["flush"] is False
+
+
 def test_get_nonexistent_route_returns_404(client):
     response = client.get("/some/nonexistent/path")
     assert response.status_code == 404
@@ -85,6 +101,7 @@ def test_rate_limit_returns_429(client):
         # Trigger 429 directly via the error handler
         with app.test_request_context():
             from app.main import too_many_requests
+
             response = too_many_requests(None)
             data = response.get_json()
             assert data["code"] == 429
@@ -107,6 +124,7 @@ def test_response_has_custom_headers(client):
 
 def test_sigint_handler():
     from app.main import sigint
+
     with pytest.raises(SystemExit) as exc_info:
         sigint(None, None)
     assert exc_info.value.code == 0

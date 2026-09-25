@@ -54,6 +54,12 @@ make format
 
 **NOTE:** It uses `black`.
 
+## Documentation
+
+- [AGENTS.md](AGENTS.md) — context and working instructions for AI coding agents
+- [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) — how the app is structured and why
+- [docs/API.md](docs/API.md) — endpoints, parameters, responses, headers, and errors
+
 ---
 
 [![author](https://img.shields.io/badge/author-iamgnlc-blueviolet)](https://github.com/iamgnlc)

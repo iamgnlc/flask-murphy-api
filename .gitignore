@@ -165,3 +165,6 @@ cython_debug/
 # ruff
 .ruff_cache
 .env*.local
+
+# pdm
+.pdm-python

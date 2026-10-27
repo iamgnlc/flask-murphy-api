@@ -21,16 +21,18 @@ colorama, py-healthcheck, python-dotenv. Tests: pytest + pytest-cov. Tooling: ru
 
 ## Commands
 
+All workflow commands are PDM scripts defined in `pyproject.toml` (`[tool.pdm.scripts]`) — run them with `pdm run <script>`; PDM picks the project virtualenv automatically. Details for each command are in the table below.
+
 | Task | Command | Notes |
 |---|---|---|
-| Install deps | `make install` | `pip install -r requirements-dev.txt` (runtime + dev tools) |
-| Run dev server | `make dev` | Flask dev server, debug on, port **8000** (from `.flaskenv`) |
-| Run prod server | `make start` | Waitress on `127.0.0.1:8080`; optional port: `python server.py 9000` |
-| Run tests | `make test` | `pytest --verbosity=1 --cov` (testpaths: `tests/`) |
-| Lint | `make lint` | `ruff check .` — CI fails on lint errors |
-| Format | `make format` | `black .` |
-| Freeze deps | `make freeze` | Regenerates `requirements.txt` (runtime) and `requirements-dev.txt` (full) from the venv |
-| Clean caches | `make clean` | Runs `./clean.sh` (removes `__pycache__`, `.pytest_cache`, `.ruff_cache`) |
+| Install deps | `pdm run install` | `pip install -r requirements-dev.txt` (runtime + dev tools) |
+| Run dev server | `pdm run dev` | Flask dev server, debug on, port **8000** (from `.flaskenv`) |
+| Run prod server | `pdm run start` | Waitress on `127.0.0.1:8080`; optional port: `python server.py 9000` |
+| Run tests | `pdm run test` | `pytest --verbosity=1 --cov` (testpaths: `tests/`) |
+| Lint | `pdm run lint` | `ruff check .` — CI fails on lint errors |
+| Format | `pdm run format` | `black .` |
+| Freeze deps | `pdm run freeze` | Regenerates `requirements.txt` (runtime) and `requirements-dev.txt` (full) from the venv |
+| Clean caches | `pdm run clean` | Runs `./clean.sh` (removes `__pycache__`, `.pytest_cache`, `.ruff_cache`) |
 
 There is **no Docker** and no database migration tooling. CI (`.github/workflows/ci-cd.yml`)
 runs two jobs on every push (Python 3.12): `build` (ruff → pytest, installs `requirements-dev.txt`)
@@ -119,7 +121,7 @@ Loaded from `.env` via python-dotenv in `app/__init__.py` (`.env` is gitignored 
 
 ## Conventions & Gotchas
 
-- **Dependency management:** exact `==` pins. `pyproject.toml` is the declaration of record (runtime → `[project].dependencies`, dev tools → `[project.optional-dependencies].dev`); `requirements.txt` (runtime only) and `requirements-dev.txt` (full freeze) are for reproducible installs — CI installs `requirements-dev.txt`. Regenerate both with `make freeze` after changing `pyproject.toml`; hand-edits to the requirements files are lost on the next freeze.
+- **Dependency management:** exact `==` pins. `pyproject.toml` is the declaration of record (runtime → `[project].dependencies`, dev tools → `[project.optional-dependencies].dev`); `requirements.txt` (runtime only) and `requirements-dev.txt` (full freeze) are for reproducible installs — CI installs `requirements-dev.txt`. Regenerate both with `pdm run freeze` after changing `pyproject.toml`; hand-edits to the requirements files are lost on the next freeze.
 - **`six` is a hidden requirement:** `py-healthcheck` imports `six` without declaring it. The pin exists only for that — don't remove it or the app fails at import.
 - **Lint must pass:** `ruff check .` gates CI. Note `ignore-init-module-imports = true` in `pyproject.toml`.
 - **`ENV` defaults to `"development"` locally:** it comes from `VERCEL_ENV`, which only the Vercel platform sets (`production`/`preview`/`development`). Locally the dev logo prints; on Vercel `production` forces `DEBUG=False`.
@@ -140,8 +142,8 @@ Loaded from `.env` via python-dotenv in `app/__init__.py` (`.env` is gitignored 
 
 ## Definition of Done
 
-1. `make lint` passes.
-2. `make test` passes (add/adjust tests for behavior changes — route changes go in `tests/test_routes.py`, cache behavior in `tests/test_cache.py`, pure utilities in `tests/utils/`).
+1. `pdm run lint` passes.
+2. `pdm run test` passes (add/adjust tests for behavior changes — route changes go in `tests/test_routes.py`, cache behavior in `tests/test_cache.py`, pure utilities in `tests/utils/`).
 3. Response envelope, headers, and status messages stay consistent with `Message` / `default_headers`.
 4. New env vars: added to `app/__init__.py`, and to `SAFE_ENV_VARS` **only if** they are safe to expose via `/env`.
 5. No secrets in code, commits, or docs.

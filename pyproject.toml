@@ -16,7 +16,7 @@ dependencies = [
     "py-healthcheck==1.10.1",
     "python-dotenv==1.2.3",
     "redis==8.1.0",
-    "six==1.17.0",  # imported by py-healthcheck but not declared by it
+    "six==1.17.0",            # imported by py-healthcheck but not declared by it
     "waitress==3.0.2",
     "Werkzeug==3.1.8",
 ]
@@ -32,6 +32,18 @@ dev = [
 ]
 
 [tool.black]
+
+[tool.pdm.scripts]
+# NOTE: `activate` has no direct equivalent here — PDM manages the venv itself,
+# e.g. `pdm use`, `pdm venv activate` or implicit activation via `pdm run`.
+install = "pip install -r requirements-dev.txt"
+dev = "flask --app app/main.py --debug run"
+start = "python server.py"
+test = "pytest --verbosity=1 --cov"
+format = "black ."
+lint = "ruff check ."
+clean = "./clean.sh"
+freeze = { shell = "pip freeze -l > requirements-dev.txt && pip freeze -l | grep -ivE '^(pytest|pytest-cov|coverage|ruff|iniconfig|pluggy)==' > requirements.txt" }
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

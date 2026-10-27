@@ -4,6 +4,8 @@
 
 Returns random Murphy's Law quote(s). Store on a Redis cache backend conditionally. Built with Flask.
 
+All workflow commands are PDM scripts defined in `pyproject.toml` under `[tool.pdm.scripts]` — run them with `pdm run <script>`. PDM runs them inside the project virtualenv automatically, no activation step needed.
+
 ## Getting Started
 
 ### Create virtual env
@@ -17,7 +19,7 @@ python3 -m venv .venv
 ### Install dependencies
 
 ```sh
-make install
+pdm run install
 ```
 
 **NOTE:** Installs `requirements-dev.txt`, which includes the runtime dependencies from `requirements.txt` plus dev tools (pytest, ruff, coverage).
@@ -25,25 +27,25 @@ make install
 ### Run app in dev
 
 ```sh
-make dev
+pdm run dev
 ```
 
 ### Run app in prod
 
 ```sh
-make start
+pdm run start
 ```
 
 ### Tests
 
 ```sh
-make test
+pdm run test
 ```
 
 ### Lint
 
 ```sh
-make lint
+pdm run lint
 ```
 
 **NOTE:** It uses `ruff`.
@@ -51,7 +53,7 @@ make lint
 ### Format
 
 ```sh
-make format
+pdm run format
 ```
 
 **NOTE:** It uses `black`.

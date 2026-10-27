@@ -101,14 +101,14 @@ forces `DEBUG=False`.
 - `tests/test_routes.py` — integration tests through `app.test_client()`; covers every route, error handler, clamping, and headers. `/flush` is tested with `cache` mocked; the `/env` test branches on whether `SHOW_ENV_KEY` is set so it passes with or without secrets.
 - `tests/test_cache.py` — `redis.Redis` is fully patched; verifies ping memoization/TTL refresh, pipeline writes, empty-input no-op, and `ConnectionError` swallowing.
 - `tests/utils/` — pure unit tests for `validate`, `Message`, `default_headers`, `load_data` (including locale discovery).
-- No Redis server or network is required to run the suite: `make test`.
+- No Redis server or network is required to run the suite: `pdm run test`.
 
 ## Deployment
 
 - **Vercel:** `vercel.json` builds `app/main.py` with `@vercel/python` and maps
   `/(.*)` → it. `ENV`/`VERCEL_ENV` is set by the platform; Redis creds and other
   secrets are Vercel environment variables (never committed).
-- **Self-hosted / local prod:** `make start` → Waitress on `127.0.0.1:8080`
+- **Self-hosted / local prod:** `pdm run start` → Waitress on `127.0.0.1:8080`
   (port overridable: `python server.py 9000`). Put a reverse proxy in front for
   TLS/public exposure — Waitress binds to loopback only.
 - **CI:** GitHub Actions runs `ruff check .` + `pytest` on every push (Python 3.12).
